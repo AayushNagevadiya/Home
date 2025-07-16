@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e8f0fe;
-      text-align: center;
-      padding-top: 100px;
-    }
-
-    h1 {
-      color: #2c3e50;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Welcome to Smart Home Dashboard</h1>
-  <p>You're logged in as <strong>aayush</strong>.</p>
+  <div class="container">
+    <h2>ESP32 Connection Check</h2>
+    <button id="checkStatusBtn" class="big-button">Check ESP32 Status</button>
+    <p id="statusText">Status: Loading...</p>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
