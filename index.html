@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form onsubmit="return login()">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p id="message"></p>
+  </div>
+
+  <script>
+    function login() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+
+      // Change these values to your actual login
+      if (user === "aayush" && pass === "Aayush1234") {
+        document.getElementById("message").innerText = "Login successful!";
+        setTimeout(() => {
+          window.location.href = "home.html"; // Redirect to dashboard
+        }, 1000);
+        return false;
+      } else {
+        document.getElementById("message").innerText = "Invalid username or password!";
+        return false;
+      }
+    }
+  </script>
+</body>
+</html>
