@@ -4,135 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Login</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #d7efff, #a6d8ff);
-      font-family: "Segoe UI", sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .login-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      width: 350px;
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 30px;
-      font-size: 28px;
-      color: #0a3f63;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      font-size: 16px;
-      border: 2px solid #add6f3;
-      border-radius: 10px;
-      outline: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #00aaff;
-      color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #008ecc;
-    }
-
-    .notification {
-      margin-top: 20px;
-      padding: 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .online {
-      background-color: #d4f7dc;
-      color: #2e7d32;
-    }
-
-    .offline {
-      background-color: #ffebee;
-      color: #c62828;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="login-container">
+  <div class="login-box">
     <h2>Smart Home Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <div id="esp32Status" class="notification"></div>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="validateLogin()">Login</button>
+    <p id="login-error" class="error-msg"></p>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+  <script>
+    function validateLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const error = document.getElementById('login-error');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-      authDomain: "home-automation-89830.firebaseapp.com",
-      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830",
-      storageBucket: "home-automation-89830.appspot.com",
-      messagingSenderId: "your_sender_id",
-      appId: "your_app_id"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    function login() {
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-
-      if (user === "12345" && pass === "Aayush@1111") {
-        checkESP32Status(); // check immediately
-        setInterval(checkESP32Status, 5000); // repeat every 5s
+      if (username === '12345' && password === 'Aayush@1111') {
+        window.location.href = 'home.html';
       } else {
-        alert("Invalid username or password!");
+        error.textContent = 'Invalid username or password';
       }
-    }
-
-    function checkESP32Status() {
-      const statusRef = ref(db, "/status/lastSeen");
-      onValue(statusRef, (snapshot) => {
-        const lastSeen = snapshot.val();
-        const now = Date.now();
-        const timeDiff = now - lastSeen;
-        const statusDiv = document.getElementById("esp32Status");
-
-        if (lastSeen && timeDiff < 10000) {
-          statusDiv.textContent = "✅ ESP32 is ONLINE";
-          statusDiv.className = "notification online";
-          statusDiv.style.display = "block";
-        } else {
-          statusDiv.textContent = "❌ ESP32 is OFFLINE";
-          statusDiv.className = "notification offline";
-          statusDiv.style.display = "block";
-        }
-      });
     }
   </script>
 </body>
