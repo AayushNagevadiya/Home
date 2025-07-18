@@ -3,14 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <title>Smart Home Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="script.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(to right, #d7e8f9, #e1f5fe);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #1976d2;
+      margin-bottom: 30px;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      padding: 18px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #125ca1;
+    }
+
+    #notification {
+      margin-top: 30px;
+      font-size: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .online {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+
+    .offline {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Smart Home Dashboard</h1>
-    <button onclick="checkESP32Status()">Check ESP32 Status</button>
-    <div id="statusNotification" class="notification" style="display: none;"></div>
+    <h1>ESP32 Connection Status</h1>
+    <button id="checkStatusBtn">🔄 Check ESP32 Status</button>
+    <div id="notification"></div>
   </div>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+      authDomain: "home-automation-89830.firebaseapp.com",
+      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+      projectId: "home-automation-89830",
+      storageBucket: "home-automation-89830.appspot.com",
+      messagingSenderId: "your_sender_id",
+      appId: "your_app_id"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    document.getElementById("checkStatusBtn").addEventListener("click", async () => {
+      const statusRef = ref(database, "/status/lastSeen");
+      const notification = document.getElementById("notification");
+
+      try {
+        const snapshot = await get(statusRef);
+        const lastSeen = snapshot.val();
+
+        if (!lastSeen) {
+          notification.innerText = "❗ ESP32 status unknown.";
+          notification.className = "offline";
+          notification.style.display = "block";
+          return;
+        }
+
+        const now = Date.now();
+        const timeDiff = now - lastSeen;
+
+        if (timeDiff < 10000) {
+          notification.innerText = "✅ ESP32 is ONLINE";
+          notification.className = "online";
+        } else {
+          notification.innerText = "❌ ESP32 is OFFLINE";
+          notification.className = "offline";
+        }
+
+        notification.style.display = "block";
+      } catch (error) {
+        console.error("Error checking ESP32 status:", error);
+        notification.innerText = "⚠ Error checking ESP32 status.";
+        notification.className = "offline";
+        notification.style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>
