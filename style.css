@@ -1,65 +1,50 @@
 body {
-  background-color: #111;
-  color: #fff;
-  font-family: sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
   margin: 0;
+  padding: 0;
 }
 
-.login-box, .container {
-  background-color: #222;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 15px #0f0;
-  width: 300px;
+.login-container, .home-container {
+  max-width: 400px;
+  margin: 80px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: center;
 }
 
-.user-box {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.user-box input {
+input {
   width: 100%;
-  padding: 10px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid #0f0;
-  color: #fff;
-}
-
-.user-box label {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  color: #aaa;
-  transition: 0.5s;
-  pointer-events: none;
-}
-
-.user-box input:focus ~ label,
-.user-box input:valid ~ label {
-  top: -15px;
-  left: 0;
-  color: #0f0;
-  font-size: 12px;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 button {
-  padding: 10px 20px;
-  background-color: #0f0;
+  padding: 12px 24px;
+  font-size: 16px;
   border: none;
-  color: #000;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
-  font-weight: bold;
-  border-radius: 4px;
 }
 
-#statusText {
+button:hover {
+  background-color: #0056b3;
+}
+
+#error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+#status {
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: bold;
 }
