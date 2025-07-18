@@ -7,12 +7,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h2>ESP32 Connection Check</h2>
+  <div class="dashboard">
+    <h2>Smart Home Control</h2>
     <button id="checkStatusBtn">Check ESP32 Status</button>
-    <p id="statusText"></p>
   </div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+
+  <!-- Your script -->
   <script src="script.js"></script>
 </body>
 </html>
