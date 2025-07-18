@@ -1,55 +1,75 @@
-// script.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+/* style.css */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: #e6f2ff;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-  authDomain: "home-automation-89830.firebaseapp.com",
-  databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-  projectId: "home-automation-89830",
-  storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+.login-container, .container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+h1, h2 {
+  color: #007BFF;
+  margin-bottom: 20px;
+}
 
-// Notification function
-window.checkESP32Status = async function () {
-  const statusRef = ref(db, "status/lastSeen");
-  const notification = document.getElementById("statusNotification");
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+}
 
-  try {
-    const snapshot = await get(statusRef);
-    if (snapshot.exists()) {
-      const lastSeen = snapshot.val();
-      const currentTime = Date.now();
-      const diff = currentTime - lastSeen;
+button {
+  width: 100%;
+  padding: 16px;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
 
-      if (diff < 10000) {
-        notification.textContent = "✅ ESP32 is Online";
-        notification.style.backgroundColor = "#c8e6c9"; // light green
-        notification.style.color = "#256029";
-      } else {
-        notification.textContent = "❌ ESP32 is Offline";
-        notification.style.backgroundColor = "#ffcdd2"; // light red
-        notification.style.color = "#b71c1c";
-      }
-    } else {
-      notification.textContent = "❌ Status not found";
-      notification.style.backgroundColor = "#ffcdd2";
-      notification.style.color = "#b71c1c";
-    }
+button:hover {
+  background-color: #0056b3;
+}
 
-    notification.style.display = "block";
-  } catch (error) {
-    notification.textContent = "❌ Error checking ESP32 Status";
-    notification.style.backgroundColor = "#ffcdd2";
-    notification.style.color = "#b71c1c";
-    notification.style.display = "block";
-    console.error("Error reading Firebase:", error);
-  }
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+#statusNotification {
+  margin-top: 20px;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.online {
+  color: green;
+  background-color: #d4edda;
+}
+
+.offline {
+  color: red;
+  background-color: #f8d7da;
 }
