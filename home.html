@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Smart Home Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="script.js" defer></script>
 </head>
 <body>
-  <div class="dashboard">
-    <h2>Smart Home Control</h2>
-    <button id="checkStatusBtn">Check ESP32 Status</button>
+  <div class="container">
+    <h1>Smart Home Dashboard</h1>
+    <button onclick="checkESP32Status()">Check ESP32 Status</button>
+    <div id="statusNotification" class="notification" style="display: none;"></div>
   </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js"></script>
-
-  <!-- Your script -->
-  <script type="module" src="script.js"></script>
 </body>
 </html>
