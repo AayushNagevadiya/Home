@@ -5,15 +5,24 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="login-box">
+  <div class="login-container">
     <h2>Smart Home Login</h2>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
     <button onclick="login()">Login</button>
-    <p id="error"></p>
+    <p id="error" class="error"></p>
   </div>
 
-  <!-- 👇 This must be module type -->
-  <script type="module" src="script.js"></script>
+  <script>
+    function login() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (user === 'Aayush' && pass === 'Aayush@1982') {
+        window.location.href = 'home.html';
+      } else {
+        document.getElementById('error').innerText = 'Invalid Username or Password';
+      }
+    }
+  </script>
 </body>
 </html>
