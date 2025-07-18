@@ -1,6 +1,6 @@
 // Firebase v12 SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -42,4 +42,17 @@ function checkESP32Status() {
       }
     })
     .catch((error) => {
-      console.error("Error reading
+      console.error("Error reading status:", error);
+      notification.textContent = "❌ Error checking status";
+      notification.style.backgroundColor = "#ffe0e0";
+      notification.style.color = "#b00020";
+    });
+}
+
+// ✅ Attach event listener to button after DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  const checkBtn = document.getElementById("checkBtn");
+  if (checkBtn) {
+    checkBtn.addEventListener("click", checkESP32Status);
+  }
+});
