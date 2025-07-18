@@ -1,61 +1,45 @@
-// Firebase Config (already correct for your project)
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
-  storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "1091051598127",
-  appId: "1:1091051598127:web:2f7b0418ce4e8fe83b27c8"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// ========== LOGIN FUNCTION ==========
-function loginUser() {
+// ---- LOGIN PAGE SCRIPT ----
+function login(event) {
+  event.preventDefault();
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  if (username === "Aayush" && password === "Aayush@1982") {
-    window.location.href = "home.html"; // ✅ Redirect to home
+  if (username === "12345" && password === "Aayush@1111") {
+    window.location.href = "home.html";
   } else {
-    alert("Invalid credentials");
+    alert("❌ Invalid Username or Password");
   }
 }
 
-// ========== ESP32 CONNECTION CHECK ==========
+// ---- HOME PAGE: ESP32 ONLINE CHECK ----
 function checkESP32Status() {
-  const statusRef = database.ref("/status/lastSeen");
+  const statusPath = "/status/lastSeen";
 
-  statusRef.once("value")
+  database.ref(statusPath).once("value")
     .then((snapshot) => {
       const lastSeen = snapshot.val();
       const now = Date.now();
-      const difference = now - lastSeen;
 
-      if (difference < 10000) {
-        alert("✅ ESP32 is ONLINE");
+      if (lastSeen && now - lastSeen < 10000) {
+        alert("✅ ESP32 is Online");
       } else {
-        alert("❌ ESP32 is OFFLINE");
+        alert("❌ ESP32 is Offline");
       }
     })
     .catch((error) => {
-      console.error("Error reading status:", error);
-      alert("⚠ Failed to read ESP32 status");
+      console.error("Firebase read error:", error);
+      alert("❌ Error checking ESP32 status");
     });
 }
-
-// ========== ADD EVENT LISTENERS ==========
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) {
-    loginBtn.addEventListener("click", loginUser);
-  }
-
-  const checkBtn = document.getElementById("checkBtn");
-  if (checkBtn) {
-    checkBtn.addEventListener("click", checkESP32Status);
-  }
-});
