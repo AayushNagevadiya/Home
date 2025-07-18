@@ -1,31 +1,27 @@
 body {
-  background: #e0f7fa;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #6dd5fa, #2980b9);
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
 }
 
 .login-container, .container {
-  background: white;
+  background-color: white;
   padding: 30px;
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   text-align: center;
-  width: 90%;
-  max-width: 400px;
-}
-
-h2, h1 {
-  color: #0288d1;
+  width: 300px;
 }
 
 input {
-  width: 100%;
-  padding: 15px;
-  margin: 15px 0;
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
   border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 16px;
@@ -33,29 +29,28 @@ input {
 
 button {
   width: 100%;
-  padding: 15px;
-  background-color: #03a9f4;
-  color: white;
+  padding: 12px;
+  font-size: 16px;
   border: none;
+  background-color: #3498db;
+  color: white;
   border-radius: 10px;
-  font-size: 18px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 button:hover {
-  background-color: #0288d1;
+  background-color: #2980b9;
 }
 
 .notification {
   margin-top: 20px;
-  padding: 15px;
-  border-radius: 10px;
-  background-color: #b3e5fc;
-  color: #01579b;
+  padding: 10px;
   font-size: 16px;
+  border-radius: 8px;
 }
 
-.error {
+.error-message {
   color: red;
   margin-top: 10px;
 }
