@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="login-container">
     <h2>Smart Home Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+    <input type="text" id="username" placeholder="Username" autofocus>
+    <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <p id="login-error" class="error"></p>
   </div>
@@ -19,12 +17,10 @@
     function login() {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      const errorMsg = document.getElementById("login-error");
-
       if (username === "aayush" && password === "Aayush@1982") {
         window.location.href = "home.html";
       } else {
-        errorMsg.textContent = "Invalid username or password.";
+        document.getElementById("login-error").textContent = "Invalid credentials!";
       }
     }
   </script>
