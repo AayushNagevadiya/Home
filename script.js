@@ -1,58 +1,38 @@
-// Firebase v12 SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
+  storageBucket: "home-automation-89830.appspot.com",
+  messagingSenderId: "45945567424",
+  appId: "1:45945567424:web:ca1de9450c32d63f8d06c2"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const database = getDatabase(app);
 
-// Function to check ESP32 online/offline
-function checkESP32Status() {
-  const notification = document.getElementById("notification");
-  const statusRef = ref(db, "status/lastSeen");
+export function checkESP32Status() {
+  const statusRef = ref(database, "status/lastSeen");
+  onValue(statusRef, (snapshot) => {
+    const lastSeen = snapshot.val();
+    const now = Date.now();
+    const diff = now - lastSeen;
+    const notification = document.getElementById("notification");
 
-  get(statusRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        const lastSeen = snapshot.val();
-        const now = Date.now();
-        const diff = now - lastSeen;
-
-        if (diff < 10000) {
-          notification.textContent = "✅ ESP32 is ONLINE";
-          notification.style.backgroundColor = "#d4f1f9";
-          notification.style.color = "#0077b6";
-        } else {
-          notification.textContent = "❌ ESP32 is OFFLINE";
-          notification.style.backgroundColor = "#ffe0e0";
-          notification.style.color = "#b00020";
-        }
-      } else {
-        notification.textContent = "⚠ No data found for ESP32";
-        notification.style.backgroundColor = "#fff8dc";
-        notification.style.color = "#555";
-      }
-    })
-    .catch((error) => {
-      console.error("Error reading status:", error);
-      notification.textContent = "❌ Error checking status";
-      notification.style.backgroundColor = "#ffe0e0";
-      notification.style.color = "#b00020";
-    });
+    if (diff < 10000) {
+      notification.textContent = "✅ ESP32 is ONLINE";
+      notification.style.backgroundColor = "#d4edda";
+      notification.style.color = "#155724";
+    } else {
+      notification.textContent = "❌ ESP32 is OFFLINE";
+      notification.style.backgroundColor = "#f8d7da";
+      notification.style.color = "#721c24";
+    }
+  });
 }
 
-// ✅ Attach event listener to button after DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-  const checkBtn = document.getElementById("checkBtn");
-  if (checkBtn) {
-    checkBtn.addEventListener("click", checkESP32Status);
-  }
-});
+// ✅ Expose the function globally
+window.checkESP32Status = checkESP32Status;
