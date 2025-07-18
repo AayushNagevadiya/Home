@@ -1,43 +1,52 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-
-// Firebase config
+// --- Firebase Config ---
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-    authDomain: "home-automation-89830.firebaseapp.com",
-    databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-    projectId: "home-automation-89830",
-    storageBucket: "home-automation-89830.firebasestorage.app",
-    messagingSenderId: "186474964680",
-    appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
-    measurementId: "G-5RB59X6NNL"
+  authDomain: "home-automation-89830.firebaseapp.com",
+  databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+  projectId: "home-automation-89830"
 };
 
-// Init Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// --- Initialize Firebase ---
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-// Elements
-const checkBtn = document.getElementById("checkStatusBtn");
-const statusText = document.getElementById("statusText");
+// --- LOGIN FUNCTION ---
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-// Auto check every 5 seconds
-function checkESP32Status() {
-  const lastSeenRef = ref(db, "status/lastSeen");
-
-  onValue(lastSeenRef, (snapshot) => {
-    const lastSeen = snapshot.val();
-    const now = Date.now();
-
-    if (lastSeen && now - lastSeen < 10000) {
-      statusText.textContent = "ESP32 is ONLINE ✅";
-      statusText.style.color = "lime";
-    } else {
-      statusText.textContent = "ESP32 is OFFLINE ❌";
-      statusText.style.color = "red";
-    }
-  });
+  // ✅ Updated credentials
+  if (username === "Aayush" && password === "Aayush@1982") {
+    window.location.href = "home.html";
+  } else {
+    document.getElementById("error-message").innerText = "Invalid username or password!";
+  }
 }
 
-checkBtn.addEventListener("click", checkESP32Status);
-setInterval(checkESP32Status, 5000);
+// --- ESP32 CONNECTION CHECK ---
+function checkESP32() {
+  const statusElement = document.getElementById("esp32-status");
+
+  const lastSeenRef = database.ref("status/lastSeen");
+
+  lastSeenRef.once("value")
+    .then((snapshot) => {
+      const lastSeen = snapshot.val();
+      if (!lastSeen) {
+        statusElement.innerText = "ESP32: Offline (No data found)";
+        return;
+      }
+
+      const now = Date.now();
+      const difference = now - lastSeen;
+
+      if (difference <= 10000) {
+        statusElement.innerText = "ESP32 is ONLINE ✅";
+      } else {
+        statusElement.innerText = "ESP32 is OFFLINE ❌";
+      }
+    })
+    .catch((error) => {
+      statusElement.innerText = "Error checking ESP32: " + error;
+    });
+}
