@@ -1,68 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Smart Home Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+
   <style>
     * {
-      box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       background: linear-gradient(to right, #d7e8f9, #e1f5fe);
-      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 40px;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
 
     .container {
-      background-color: #ffffff;
+      background-color: #fff;
       padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
       text-align: center;
       width: 100%;
-      max-width: 500px;
     }
 
     h1 {
-      font-size: 28px;
       color: #1976d2;
       margin-bottom: 30px;
     }
 
-    button {
-      background-color: #1976d2;
-      color: white;
-      padding: 18px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: #125ca1;
-    }
-
     #notification {
-      margin-top: 30px;
       font-size: 20px;
       padding: 15px;
       border-radius: 10px;
       display: none;
+      margin-top: 20px;
     }
 
     .online {
@@ -79,11 +61,10 @@
 <body>
   <div class="container">
     <h1>ESP32 Connection Status</h1>
-    <button id="checkStatusBtn">🔄 Check ESP32 Status</button>
-    <div id="notification"></div>
+    <div id="notification">Checking...</div>
   </div>
 
-  <!-- Firebase Scripts -->
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
@@ -92,21 +73,17 @@
       apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
       authDomain: "home-automation-89830.firebaseapp.com",
       databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830",
-      storageBucket: "home-automation-89830.appspot.com",
-      messagingSenderId: "your_sender_id",
-      appId: "your_app_id"
+      projectId: "home-automation-89830"
     };
 
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    document.getElementById("checkStatusBtn").addEventListener("click", async () => {
-      const statusRef = ref(database, "/status/lastSeen");
-      const notification = document.getElementById("notification");
+    const notification = document.getElementById("notification");
 
+    async function checkESP32Status() {
       try {
-        const snapshot = await get(statusRef);
+        const snapshot = await get(ref(database, "/status/lastSeen"));
         const lastSeen = snapshot.val();
 
         if (!lastSeen) {
@@ -117,9 +94,9 @@
         }
 
         const now = Date.now();
-        const timeDiff = now - lastSeen;
+        const diff = now - lastSeen;
 
-        if (timeDiff < 10000) {
+        if (diff < 10000) {
           notification.innerText = "✅ ESP32 is ONLINE";
           notification.className = "online";
         } else {
@@ -128,13 +105,18 @@
         }
 
         notification.style.display = "block";
-      } catch (error) {
-        console.error("Error checking ESP32 status:", error);
-        notification.innerText = "⚠ Error checking ESP32 status.";
+      } catch (err) {
+        console.error("Status check error:", err);
+        notification.innerText = "⚠ Error checking status";
         notification.className = "offline";
         notification.style.display = "block";
       }
-    });
+    }
+
+    // Run every 5 seconds
+    setInterval(checkESP32Status, 5000);
+    // Run once immediately
+    checkESP32Status();
   </script>
 </body>
 </html>
