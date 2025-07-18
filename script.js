@@ -1,53 +1,48 @@
-// Firebase v9 SDK
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-  authDomain: "home-automation-89830.firebaseapp.com",
-  databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-  projectId: "home-automation-89830",
-  storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "743430850988",
-  appId: "1:743430850988:web:8c50c67dc36ff131c0160f"
-};
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+    authDomain: "home-automation-89830.firebaseapp.com",
+    databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+    projectId: "home-automation-89830",
+    storageBucket: "home-automation-89830.firebasestorage.app",
+    messagingSenderId: "186474964680",
+    appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
+    measurementId: "G-5RB59X6NNL"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 
-// Check ESP32 status
-window.checkESP32 = async function () {
-  const statusRef = ref(db, '/status/lastSeen');
-  try {
-    const snapshot = await get(statusRef);
-    if (snapshot.exists()) {
-      const lastSeen = snapshot.val();
-      const now = Date.now();
-      const diff = now - lastSeen;
-      const statusText = diff < 10000 ? '🟢 Online' : '🔴 Offline';
-      document.getElementById('status').innerText = 'Status: ' + statusText;
+// Elements
+const checkBtn = document.getElementById("checkStatusBtn");
+const statusText = document.getElementById("statusText");
 
-      if (diff < 10000) {
-        document.getElementById('ledControls').style.display = 'block';
-      } else {
-        document.getElementById('ledControls').style.display = 'none';
-      }
+// Auto check every 5 seconds
+function checkESP32Status() {
+  const lastSeenRef = ref(db, "status/lastSeen");
+
+  onValue(lastSeenRef, (snapshot) => {
+    const lastSeen = snapshot.val();
+    const now = Date.now();
+
+    if (lastSeen && now - lastSeen < 10000) {
+      statusText.textContent = "ESP32 is ONLINE ✅";
+      statusText.style.color = "lime";
     } else {
-      document.getElementById('status').innerText = 'Status: Not found';
+      statusText.textContent = "ESP32 is OFFLINE ❌";
+      statusText.style.color = "red";
     }
-  } catch (error) {
-    document.getElementById('status').innerText = 'Error checking status';
-  }
-};
-
-// Toggle LED on Firebase
-window.toggleLED = function (ledNumber) {
-  const ledPath = /leds/led${ledNumber};
-  const ledRef = ref(db, ledPath);
-  get(ledRef).then(snapshot => {
-    const currentState = snapshot.exists() ? snapshot.val() : 0;
-    const newState = currentState === 1 ? 0 : 1;
-    set(ledRef, newState);
-    alert(LED ${ledNumber} turned ${newState ? 'ON' : 'OFF'});
   });
-};
+}
+
+checkBtn.addEventListener("click", checkESP32Status);
+setInterval(checkESP32Status, 5000);
