@@ -4,29 +4,128 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box, .dashboard {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input {
+      padding: 15px;
+      width: 250px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 15px 30px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .notification {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Smart Home Login</h1>
-    <input type="text" id="username" placeholder="Username" autofocus />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <p id="login-error" class="error-msg"></p>
-  </div>
 
-  <script>
-    function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("login-error");
+<div class="login-box" id="loginBox">
+  <h2>Login to Smart Home</h2>
+  <input type="text" id="username" placeholder="Username"/><br>
+  <input type="password" id="password" placeholder="Password"/><br>
+  <button onclick="login()">Login</button>
+</div>
 
-      if (username === "aayush" && password === "Aayush@1982") {
-        window.location.href = "home.html";
-      } else {
-        errorMsg.textContent = "Invalid username or password";
-      }
+<div class="dashboard hidden" id="dashboard">
+  <h2>Welcome to Smart Home</h2>
+  <button onclick="checkESP32Status()">Check ESP32 Status</button>
+  <div id="notification" class="notification"></div>
+</div>
+
+<script type="module">
+  // Firebase import
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+    authDomain: "home-automation-89830.firebaseapp.com",
+    databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+    projectId: "home-automation-89830",
+    storageBucket: "home-automation-89830.appspot.com",
+    messagingSenderId: "333580409166",
+    appId: "1:333580409166:web:f25b471d16fbb96dd8d9b6"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Login Function
+  window.login = function () {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (username === "aayush" && password === "Aayush@1982") {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+    } else {
+      alert("Invalid username or password");
     }
-  </script>
+  };
+
+  // Check ESP32 Online Status
+  window.checkESP32Status = async function () {
+    const statusRef = ref(db, 'status/lastSeen');
+    const snapshot = await get(statusRef);
+    const now = Date.now();
+
+    if (snapshot.exists()) {
+      const lastSeen = snapshot.val();
+      const diff = now - lastSeen;
+
+      if (diff < 10000) {
+        showNotification("✅ ESP32 is ONLINE", "#d1f7ff");
+      } else {
+        showNotification("❌ ESP32 is OFFLINE", "#ffd1d1");
+      }
+    } else {
+      showNotification("⚠ No data found for ESP32", "#ffefc1");
+    }
+  };
+
+  function showNotification(msg, color) {
+    const note = document.getElementById("notification");
+    note.innerText = msg;
+    note.style.backgroundColor = color;
+  }
+</script>
 </body>
 </html>
