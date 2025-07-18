@@ -7,33 +7,26 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="login-box">
+  <div class="login-container">
     <h2>Smart Home Login</h2>
-    <form id="loginForm">
-      <div class="user-box">
-        <input type="text" name="username" required />
-        <label>Username</label>
-      </div>
-      <div class="user-box">
-        <input type="password" name="password" required />
-        <label>Password</label>
-      </div>
-      <button type="submit">Login</button>
-    </form>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="login-error" class="error"></p>
   </div>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const username = e.target.username.value;
-      const password = e.target.password.value;
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const errorMsg = document.getElementById("login-error");
 
-      if (username === "aayush" && password === "Aayush1234") {
+      if (username === "aayush" && password === "Aayush@1982") {
         window.location.href = "home.html";
       } else {
-        alert("Invalid username or password");
+        errorMsg.textContent = "Invalid username or password.";
       }
-    });
+    }
   </script>
 </body>
 </html>
