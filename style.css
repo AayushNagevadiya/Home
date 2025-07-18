@@ -1,50 +1,65 @@
 body {
-  font-family: "Segoe UI", sans-serif;
-  background-color: #f0f4f8;
+  background-color: #111;
+  color: #fff;
+  font-family: sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin: 0;
 }
 
-.login-container, .home-container {
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 400px;
+.login-box, .container {
+  background-color: #222;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #0f0;
+  width: 300px;
   text-align: center;
 }
 
-input {
-  display: block;
+.user-box {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.user-box input {
   width: 100%;
-  padding: 15px;
-  margin: 10px 0;
-  font-size: 18px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid #0f0;
+  color: #fff;
+}
+
+.user-box label {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  color: #aaa;
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.user-box input:focus ~ label,
+.user-box input:valid ~ label {
+  top: -15px;
+  left: 0;
+  color: #0f0;
+  font-size: 12px;
 }
 
 button {
-  padding: 15px 30px;
-  font-size: 18px;
-  background-color: #4caf50;
-  color: white;
+  padding: 10px 20px;
+  background-color: #0f0;
   border: none;
-  border-radius: 8px;
+  color: #000;
   cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.3s ease;
+  font-weight: bold;
+  border-radius: 4px;
 }
 
-button:hover {
-  background-color: #45a049;
-}
-
-#error-message {
-  color: red;
-  margin-top: 10px;
+#statusText {
+  margin-top: 20px;
   font-size: 16px;
 }
