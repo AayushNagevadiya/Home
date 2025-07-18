@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -20,6 +21,19 @@
       <button type="submit">Login</button>
     </form>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const username = e.target.username.value;
+      const password = e.target.password.value;
+
+      if (username === "12345" && password === "Aayush@1111") {
+        window.location.href = "home.html";
+      } else {
+        alert("Invalid username or password");
+      }
+    });
+  </script>
 </body>
 </html>
