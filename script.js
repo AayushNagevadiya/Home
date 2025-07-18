@@ -1,52 +1,58 @@
-// --- Firebase Config ---
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-  projectId: "home-automation-89830"
+  projectId: "home-automation-89830",
+  storageBucket: "home-automation-89830.firebasestorage.app",
+  messagingSenderId: "186474964680",
+  appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
+  measurementId: "G-5RB59X6NNL"
 };
 
-// --- Initialize Firebase ---
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-// --- LOGIN FUNCTION ---
-function login() {
+// --- Login Function ---
+window.login = function () {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  // ✅ Updated credentials
   if (username === "Aayush" && password === "Aayush@1982") {
     window.location.href = "home.html";
   } else {
     document.getElementById("error-message").innerText = "Invalid username or password!";
   }
-}
+};
 
-// --- ESP32 CONNECTION CHECK ---
-function checkESP32() {
-  const statusElement = document.getElementById("esp32-status");
+// --- ESP32 Status Check Function ---
+window.checkESP32 = async function () {
+  const statusText = document.getElementById("esp32-status");
+  const lastSeenRef = ref(database, "status/lastSeen");
 
-  const lastSeenRef = database.ref("status/lastSeen");
+  try {
+    const snapshot = await get(lastSeenRef);
+    const lastSeen = snapshot.val();
 
-  lastSeenRef.once("value")
-    .then((snapshot) => {
-      const lastSeen = snapshot.val();
-      if (!lastSeen) {
-        statusElement.innerText = "ESP32: Offline (No data found)";
-        return;
-      }
+    if (!lastSeen) {
+      statusText.innerText = "ESP32: Offline (No data found)";
+      return;
+    }
 
-      const now = Date.now();
-      const difference = now - lastSeen;
+    const now = Date.now();
+    const diff = now - lastSeen;
 
-      if (difference <= 10000) {
-        statusElement.innerText = "ESP32 is ONLINE ✅";
-      } else {
-        statusElement.innerText = "ESP32 is OFFLINE ❌";
-      }
-    })
-    .catch((error) => {
-      statusElement.innerText = "Error checking ESP32: " + error;
-    });
-}
+    if (diff <= 10000) {
+      statusText.innerText = "ESP32 is ONLINE ✅";
+    } else {
+      statusText.innerText = "ESP32 is OFFLINE ❌";
+    }
+  } catch (err) {
+    statusText.innerText = "Error checking status: " + err.message;
+  }
+};
