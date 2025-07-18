@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Home Dashboard</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="dashboard">
-    <h2>Welcome to Smart Home</h2>
-    <button onclick="checkESP32Status()">Check ESP32 Connection</button>
-    <div id="statusBox" class="notification"></div>
+  <div class="container">
+    <h1>Welcome to Smart Home</h1>
+    <button onclick="checkESP32Status()">Check ESP32 Status</button>
+    <div id="notification" class="notification"></div>
   </div>
 
   <script type="module" src="script.js"></script>
