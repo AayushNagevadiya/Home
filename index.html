@@ -2,91 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
-
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #d7e8f9, #e1f5fe);
-      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #cfe9f1, #e0f7fa);
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
+      margin: 0;
     }
 
-    .login-box {
-      background: white;
+    .login-container {
+      background-color: white;
       padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       width: 100%;
       max-width: 400px;
+      text-align: center;
     }
 
-    h2 {
-      text-align: center;
-      color: #1976d2;
-      margin-bottom: 30px;
+    .login-container h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+      color: #0077b6;
     }
 
     input[type="text"],
     input[type="password"] {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       margin: 10px 0;
       border: 1px solid #ddd;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 16px;
     }
 
     button {
       width: 100%;
       padding: 15px;
-      background-color: #1976d2;
-      color: white;
       font-size: 18px;
+      background-color: #00b4d8;
+      color: white;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 15px;
+      transition: background 0.3s;
     }
 
     button:hover {
-      background-color: #125ca1;
+      background-color: #0096c7;
     }
 
     .error {
       color: red;
       margin-top: 10px;
-      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="login-box">
+  <div class="login-container">
     <h2>Smart Home Login</h2>
-    <input type="text" id="username" placeholder="Enter Username" />
-    <input type="password" id="password" placeholder="Enter Password" />
+    <input type="text" id="username" placeholder="Username" autofocus />
+    <input type="password" id="password" placeholder="Password" />
     <button onclick="login()">Login</button>
-    <div class="error" id="errorMsg"></div>
+    <p class="error" id="error-msg"></p>
   </div>
 
   <script>
     function login() {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      const error = document.getElementById("errorMsg");
+      const errorMsg = document.getElementById("error-msg");
 
       if (username === "12345" && password === "Aayush@1111") {
         window.location.href = "home.html";
       } else {
-        error.textContent = "❌ Invalid username or password";
+        errorMsg.textContent = "Invalid username or password";
       }
     }
   </script>
