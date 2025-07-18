@@ -1,31 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Smart Home Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Home Automation</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="login-container">
     <h2>Smart Home Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
     <button onclick="login()">Login</button>
-    <p id="error" class="error"></p>
+    <p id="error-message"></p>
   </div>
 
-  <script>
-    function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      const error = document.getElementById("error");
-
-      if (username === "Aayush" && password === "Aayush@1982") {
-        window.location.href = "home.html";
-      } else {
-        error.textContent = "Invalid username or password";
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
