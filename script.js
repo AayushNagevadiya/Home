@@ -1,54 +1,42 @@
-// Import Firebase SDK modules (Modular v12)
+// script.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
-  storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "your_sender_id",
-  appId: "your_app_id"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getDatabase(app);
+const database = getDatabase(app);
 
-// ✅ Check ESP32 Status Function
-async function checkESP32Status() {
-  const statusRef = ref(db, "/status/lastSeen");
+// ESP32 status check
+document.getElementById('checkStatusBtn').addEventListener('click', async () => {
+  const statusElement = document.getElementById('statusNotification');
+  statusElement.innerText = "Checking ESP32 status...";
 
   try {
-    const snapshot = await get(statusRef);
-    if (!snapshot.exists()) {
-      alert("❌ ESP32 status unknown.");
-      return;
-    }
-
-    const lastSeen = snapshot.val();
-    const now = Date.now();
-    const timeDiff = now - lastSeen;
-
-    if (timeDiff < 10000) {
-      alert("✅ ESP32 is ONLINE");
+    const snapshot = await get(ref(database, '/status/lastSeen'));
+    if (snapshot.exists()) {
+      const lastSeen = snapshot.val();
+      const now = Date.now();
+      const diff = now - lastSeen;
+      if (diff <= 10000) {
+        statusElement.innerText = "✅ ESP32 is Online";
+        statusElement.className = "online";
+      } else {
+        statusElement.innerText = "🔴 ESP32 is Offline";
+        statusElement.className = "offline";
+      }
     } else {
-      alert("❌ ESP32 is OFFLINE");
+      statusElement.innerText = "❌ Status not found in database.";
+      statusElement.className = "offline";
     }
   } catch (error) {
-    console.error("Error checking ESP32 status:", error);
-    alert("⚠ Failed to check ESP32 status.");
-  }
-}
-
-// ✅ Attach button listener after DOM loads
-document.addEventListener("DOMContentLoaded", () => {
-  const statusBtn = document.getElementById("checkStatusBtn");
-  if (statusBtn) {
-    statusBtn.addEventListener("click", checkESP32Status);
+    statusElement.innerText = "❌ Error checking ESP32 Status";
+    statusElement.className = "offline";
+    console.error("Error:", error);
   }
 });
