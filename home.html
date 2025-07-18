@@ -1,122 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Smart Home Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
-
-  <style>
-    * {
-      font-family: 'Poppins', sans-serif;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: linear-gradient(to right, #d7e8f9, #e1f5fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .container {
-      background-color: #fff;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
-      text-align: center;
-      width: 100%;
-    }
-
-    h1 {
-      color: #1976d2;
-      margin-bottom: 30px;
-    }
-
-    #notification {
-      font-size: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      display: none;
-      margin-top: 20px;
-    }
-
-    .online {
-      background-color: #c8e6c9;
-      color: #2e7d32;
-    }
-
-    .offline {
-      background-color: #ffcdd2;
-      color: #c62828;
-    }
-  </style>
+  <title>Smart Home</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>ESP32 Connection Status</h1>
-    <div id="notification">Checking...</div>
+    <h1>Smart Home Dashboard</h1>
+    <div id="status" class="notification">Checking ESP32 status...</div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-      authDomain: "home-automation-89830.firebaseapp.com",
-      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    const notification = document.getElementById("notification");
-
-    async function checkESP32Status() {
-      try {
-        const snapshot = await get(ref(database, "/status/lastSeen"));
-        const lastSeen = snapshot.val();
-
-        if (!lastSeen) {
-          notification.innerText = "❗ ESP32 status unknown.";
-          notification.className = "offline";
-          notification.style.display = "block";
-          return;
-        }
-
-        const now = Date.now();
-        const diff = now - lastSeen;
-
-        if (diff < 10000) {
-          notification.innerText = "✅ ESP32 is ONLINE";
-          notification.className = "online";
-        } else {
-          notification.innerText = "❌ ESP32 is OFFLINE";
-          notification.className = "offline";
-        }
-
-        notification.style.display = "block";
-      } catch (err) {
-        console.error("Status check error:", err);
-        notification.innerText = "⚠ Error checking status";
-        notification.className = "offline";
-        notification.style.display = "block";
-      }
-    }
-
-    // Run every 5 seconds
-    setInterval(checkESP32Status, 5000);
-    // Run once immediately
-    checkESP32Status();
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
