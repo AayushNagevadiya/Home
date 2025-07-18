@@ -4,113 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Home Login</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #e0f7ff, #b3e5fc);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
-    h1 {
-      color: #0077b6;
-      margin-bottom: 20px;
-      font-size: 28px;
-    }
-    input {
-      width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      font-size: 16px;
-      border: 2px solid #b3e5fc;
-      border-radius: 8px;
-    }
-    button {
-      width: 100%;
-      padding: 15px;
-      font-size: 18px;
-      background-color: #00b4d8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #0077b6;
-    }
-    #esp32Status {
-      margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Smart Home Login</h1>
-    <input type="text" id="username" placeholder="Enter Username" />
-    <input type="password" id="password" placeholder="Enter Password" />
-    <!-- ✅ FIXED: No onclick -->
-    <button id="loginBtn">Login</button>
-    <div id="esp32Status"></div>
+  <div class="login-box">
+    <h2>Smart Home Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="validateLogin()">Login</button>
+    <p id="login-error" class="error-msg"></p>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+  <script>
+    function validateLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const error = document.getElementById('login-error');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-      authDomain: "home-automation-89830.firebaseapp.com",
-      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    function checkESP32Status() {
-      const statusRef = ref(database, '/status/lastSeen');
-      onValue(statusRef, (snapshot) => {
-        const lastSeen = snapshot.val();
-        const now = Date.now();
-        const diff = now - lastSeen;
-
-        const statusDiv = document.getElementById("esp32Status");
-        if (lastSeen && diff < 10000) {
-          statusDiv.textContent = "✅ ESP32 is ONLINE";
-          statusDiv.style.color = "green";
-        } else {
-          statusDiv.textContent = "❌ ESP32 is OFFLINE";
-          statusDiv.style.color = "red";
-        }
-      });
-    }
-
-    // ✅ Add event listener (NO onclick)
-    document.getElementById("loginBtn").addEventListener("click", () => {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      if (username === "12345" && password === "Aayush@1111") {
-        checkESP32Status();
-        setInterval(checkESP32Status, 5000);
+      if (username === '12345' && password === 'Aayush@1111') {
+        window.location.href = 'home.html';
       } else {
-        alert("❌ Incorrect Username or Password!");
+        error.textContent = 'Invalid username or password';
       }
-    });
+    }
   </script>
 </body>
 </html>
