@@ -9,7 +9,6 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #e0f7ff, #b3e5fc);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
@@ -63,6 +62,7 @@
     <h1>Smart Home Login</h1>
     <input type="text" id="username" placeholder="Enter Username" />
     <input type="password" id="password" placeholder="Enter Password" />
+    <!-- ✅ FIXED: No onclick -->
     <button id="loginBtn">Login</button>
     <div id="esp32Status"></div>
   </div>
@@ -71,7 +71,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-    // ✅ Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
       authDomain: "home-automation-89830.firebaseapp.com",
@@ -82,7 +81,6 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    // ✅ Function to check ESP32 status
     function checkESP32Status() {
       const statusRef = ref(database, '/status/lastSeen');
       onValue(statusRef, (snapshot) => {
@@ -101,7 +99,7 @@
       });
     }
 
-    // ✅ Handle Login (Attach to button)
+    // ✅ Add event listener (NO onclick)
     document.getElementById("loginBtn").addEventListener("click", () => {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
