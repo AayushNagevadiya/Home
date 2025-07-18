@@ -1,86 +1,77 @@
-/* Apply a soft light blue background */
+/* Light blue background and modern layout */
 body {
   margin: 0;
+  padding: 0;
+  background: #e3f2fd; /* Light sky blue */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #e0f7fa; /* Light blue */
-  color: #333;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
-/* Main container */
+/* White card container */
 .container {
-  background-color: white;
+  background-color: #ffffff;
   padding: 40px 50px;
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
   text-align: center;
-  width: 90%;
   max-width: 400px;
+  width: 90%;
 }
 
-/* Headings */
-h1, h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
-  color: #00796b; /* Teal blue */
+/* Title */
+h1 {
+  font-size: 30px;
+  color: #0277bd;
+  margin-bottom: 30px;
 }
 
-/* Input fields */
-input[type="text"],
-input[type="password"] {
-  width: 100%;
-  padding: 14px;
-  margin: 10px 0 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 16px;
-}
-
-/* Buttons */
+/* Status check button */
 button {
-  background-color: #0288d1; /* Light blue */
-  color: white;
-  padding: 14px 25px;
+  background-color: #0288d1;
+  color: #fff;
   font-size: 18px;
+  padding: 15px 25px;
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  margin-top: 10px;
   width: 100%;
   transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #0277bd; /* Slightly darker blue */
+  background-color: #0277bd;
 }
 
-/* Notification styling */
+/* ESP32 Status notification */
 .notification {
-  margin-top: 25px;
+  margin-top: 30px;
   padding: 15px;
-  font-size: 18px;
+  font-size: 17px;
+  background-color: #b3e5fc;
+  color: #01579b;
   border-radius: 10px;
-  background-color: #b2ebf2;
-  color: #004d40;
-  font-weight: bold;
-  display: inline-block;
+  font-weight: 600;
 }
 
-/* Responsive tweaks */
+/* Responsive design */
 @media (max-width: 480px) {
   .container {
     padding: 30px 20px;
   }
 
-  button {
-    font-size: 16px;
-    padding: 12px 20px;
+  h1 {
+    font-size: 24px;
   }
 
-  h1, h2 {
-    font-size: 24px;
+  button {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  .notification {
+    font-size: 16px;
   }
 }
