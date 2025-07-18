@@ -1,18 +1,6 @@
-// ✅ LOGIN VALIDATION
-function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-
-  if (username === "Aayush" && password === "Aayush@1982") {
-    window.location.href = "home.html";
-  } else {
-    document.getElementById("error").innerText = "Invalid username or password!";
-  }
-}
-
-// ✅ FIREBASE SETUP + ESP32 STATUS CHECK (Only on home.html)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+// Firebase v9 SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
@@ -20,27 +8,46 @@ const firebaseConfig = {
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
   storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "186474964680",
-  appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
-  measurementId: "G-5RB59X6NNL"
+  messagingSenderId: "743430850988",
+  appId: "1:743430850988:web:8c50c67dc36ff131c0160f"
 };
 
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const db = getDatabase(app);
 
-// ✅ CHECK ESP32 STATUS FUNCTION
-function checkESP32() {
-  const statusRef = ref(database, "/status/lastSeen");
-  onValue(statusRef, (snapshot) => {
-    const lastSeen = snapshot.val();
-    const now = Date.now();
-    if (lastSeen && now - lastSeen < 10000) {
-      document.getElementById("status").innerText = "Status: ESP32 is ONLINE ✅";
+// Check ESP32 status
+window.checkESP32 = async function () {
+  const statusRef = ref(db, '/status/lastSeen');
+  try {
+    const snapshot = await get(statusRef);
+    if (snapshot.exists()) {
+      const lastSeen = snapshot.val();
+      const now = Date.now();
+      const diff = now - lastSeen;
+      const statusText = diff < 10000 ? '🟢 Online' : '🔴 Offline';
+      document.getElementById('status').innerText = 'Status: ' + statusText;
+
+      if (diff < 10000) {
+        document.getElementById('ledControls').style.display = 'block';
+      } else {
+        document.getElementById('ledControls').style.display = 'none';
+      }
     } else {
-      document.getElementById("status").innerText = "Status: ESP32 is OFFLINE ❌";
+      document.getElementById('status').innerText = 'Status: Not found';
     }
-  }, (error) => {
-    document.getElementById("status").innerText = "Status: Error reading status";
-    console.error("Error checking ESP32:", error);
+  } catch (error) {
+    document.getElementById('status').innerText = 'Error checking status';
+  }
+};
+
+// Toggle LED on Firebase
+window.toggleLED = function (ledNumber) {
+  const ledPath = /leds/led${ledNumber};
+  const ledRef = ref(db, ledPath);
+  get(ledRef).then(snapshot => {
+    const currentState = snapshot.exists() ? snapshot.val() : 0;
+    const newState = currentState === 1 ? 0 : 1;
+    set(ledRef, newState);
+    alert(LED ${ledNumber} turned ${newState ? 'ON' : 'OFF'});
   });
-}
+};
