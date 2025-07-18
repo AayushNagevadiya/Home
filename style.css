@@ -1,67 +1,61 @@
 body {
-  margin: 0;
-  padding: 0;
+  background: #e0f7fa;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #d8ecf3, #eaf6fc);
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
-.login-container,
-.dashboard {
+.login-container, .container {
   background: white;
-  padding: 40px;
+  padding: 30px;
   border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 90%;
   max-width: 400px;
 }
 
-h2 {
-  color: #2a7ca3;
-  margin-bottom: 20px;
+h2, h1 {
+  color: #0288d1;
 }
 
 input {
-  display: block;
   width: 100%;
-  margin: 15px 0;
   padding: 15px;
-  font-size: 18px;
-  border: 1px solid #ccc;
+  margin: 15px 0;
   border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
 button {
-  padding: 15px;
   width: 100%;
-  font-size: 18px;
-  background-color: #2a7ca3;
+  padding: 15px;
+  background-color: #03a9f4;
   color: white;
   border: none;
   border-radius: 10px;
+  font-size: 18px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #24698c;
+  background-color: #0288d1;
 }
 
 .notification {
   margin-top: 20px;
-  padding: 20px;
-  border-radius: 12px;
-  background-color: #d2f0ff;
-  color: #2a7ca3;
-  font-size: 18px;
-  font-weight: bold;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #b3e5fc;
+  color: #01579b;
+  font-size: 16px;
 }
 
 .error {
   color: red;
-  font-size: 16px;
   margin-top: 10px;
 }
