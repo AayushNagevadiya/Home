@@ -1,63 +1,50 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to right, #f9f9f9, #ffffff);
-  color: #333;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f0f4f8;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
 }
 
-.login-box, .dashboard {
-  background-color: #ffffff;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+.login-container, .home-container {
+  background-color: #fff;
   padding: 40px;
-  border-radius: 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
   text-align: center;
-  width: 360px;
-}
-
-h1 {
-  font-size: 32px;
-  margin-bottom: 30px;
-  color: #2c3e50;
 }
 
 input {
+  display: block;
   width: 100%;
   padding: 15px;
+  margin: 10px 0;
   font-size: 18px;
-  margin: 12px 0;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
 }
 
 button {
   padding: 15px 30px;
   font-size: 18px;
-  margin-top: 20px;
-  background-color: #1abc9c;
+  background-color: #4caf50;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  width: 100%;
+  margin-top: 10px;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background-color: #16a085;
+  background-color: #45a049;
 }
 
 #error-message {
   color: red;
   margin-top: 10px;
   font-size: 16px;
-}
-
-#esp32-status {
-  margin-top: 30px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #2c3e50;
 }
