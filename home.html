@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ESP32 Connection Status</title>
+  <meta charset="UTF-8">
+  <title>Home Automation</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="home-container">
-    <h1>Welcome, Aayush</h1>
-    <button id="checkBtn" onclick="checkESP32()">Check ESP32 Connection</button>
-    <p id="status"></p>
+  <div class="dashboard">
+    <h2>Smart Home Dashboard</h2>
+    <button id="checkBtn">Check ESP32 Status</button>
+    <p id="espStatus">Status: Not checked</p>
   </div>
 
-  <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
@@ -25,37 +23,29 @@
       projectId: "home-automation-89830",
       storageBucket: "home-automation-89830.appspot.com",
       messagingSenderId: "186474964680",
-      appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
-      measurementId: "G-5RB59X6NNL"
+      appId: "1:186474964680:web:768fbe82134fb1a435e7fd"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    function checkESP32() {
-      const statusText = document.getElementById("status");
-      const statusRef = ref(db, "/status/lastSeen");
-
+    document.getElementById("checkBtn").addEventListener("click", () => {
+      const statusRef = ref(db, 'status/lastSeen');
       get(statusRef).then((snapshot) => {
         if (snapshot.exists()) {
           const lastSeen = snapshot.val();
           const now = Date.now();
           const diff = now - lastSeen;
-
-          if (diff < 10000) {
-            statusText.textContent = "✅ ESP32 is Online";
-            statusText.style.color = "green";
-          } else {
-            statusText.textContent = "❌ ESP32 is Offline";
-            statusText.style.color = "red";
-          }
+          const statusText = diff < 10000 ? "🟢 ESP32 is Online" : "🔴 ESP32 is Offline";
+          document.getElementById("espStatus").textContent = "Status: " + statusText;
         } else {
-          statusText.textContent = "⚠ No data found.";
+          document.getElementById("espStatus").textContent = "Status: No data found";
         }
       }).catch((error) => {
-        statusText.textContent = "Error: " + error;
+        document.getElementById("espStatus").textContent = "Error checking status";
+        console.error(error);
       });
-    }
+    });
   </script>
 </body>
 </html>
