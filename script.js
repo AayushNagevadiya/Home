@@ -1,4 +1,3 @@
-// script.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
@@ -12,31 +11,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// ESP32 status check
-document.getElementById('checkStatusBtn').addEventListener('click', async () => {
-  const statusElement = document.getElementById('statusNotification');
-  statusElement.innerText = "Checking ESP32 status...";
+function checkESP32Status() {
+  const statusDiv = document.getElementById("status");
+  const lastSeenRef = ref(database, "status/lastSeen");
 
-  try {
-    const snapshot = await get(ref(database, '/status/lastSeen'));
+  get(lastSeenRef).then((snapshot) => {
     if (snapshot.exists()) {
       const lastSeen = snapshot.val();
       const now = Date.now();
       const diff = now - lastSeen;
-      if (diff <= 10000) {
-        statusElement.innerText = "✅ ESP32 is Online";
-        statusElement.className = "online";
+      if (diff < 10000) {
+        statusDiv.innerText = "✅ ESP32 is Online";
+        statusDiv.style.backgroundColor = "#d4edda";
+        statusDiv.style.color = "#155724";
       } else {
-        statusElement.innerText = "🔴 ESP32 is Offline";
-        statusElement.className = "offline";
+        statusDiv.innerText = "❌ ESP32 is Offline";
+        statusDiv.style.backgroundColor = "#f8d7da";
+        statusDiv.style.color = "#721c24";
       }
     } else {
-      statusElement.innerText = "❌ Status not found in database.";
-      statusElement.className = "offline";
+      statusDiv.innerText = "⚠ No ESP32 status found";
     }
-  } catch (error) {
-    statusElement.innerText = "❌ Error checking ESP32 Status";
-    statusElement.className = "offline";
-    console.error("Error:", error);
-  }
-});
+  }).catch((error) => {
+    console.error("Error checking ESP32 status:", error);
+    statusDiv.innerText = "❌ Error checking ESP32 status";
+  });
+}
+
+setInterval(checkESP32Status, 5000);
+checkESP32Status(); // First check on page load
