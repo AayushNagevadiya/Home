@@ -1,27 +1,25 @@
-// Firebase SDK
+// Firebase v12 SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-// Firebase Config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
-  storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Function to check ESP32 online/offline
 function checkESP32Status() {
-  const statusBox = document.getElementById("statusBox");
-  const dbRef = ref(db);
+  const notification = document.getElementById("notification");
+  const statusRef = ref(db, "status/lastSeen");
 
-  get(child(dbRef, "status/lastSeen"))
+  get(statusRef)
     .then((snapshot) => {
       if (snapshot.exists()) {
         const lastSeen = snapshot.val();
@@ -29,20 +27,19 @@ function checkESP32Status() {
         const diff = now - lastSeen;
 
         if (diff < 10000) {
-          statusBox.textContent = "✅ ESP32 is Online";
-          statusBox.style.backgroundColor = "#d2f0ff";
-          statusBox.style.color = "#2a7ca3";
+          notification.textContent = "✅ ESP32 is ONLINE";
+          notification.style.backgroundColor = "#d4f1f9";
+          notification.style.color = "#0077b6";
         } else {
-          statusBox.textContent = "❌ ESP32 is Offline";
-          statusBox.style.backgroundColor = "#ffe5e5";
-          statusBox.style.color = "#cc0000";
+          notification.textContent = "❌ ESP32 is OFFLINE";
+          notification.style.backgroundColor = "#ffe0e0";
+          notification.style.color = "#b00020";
         }
       } else {
-        statusBox.textContent = "⚠ No status found in Firebase.";
+        notification.textContent = "⚠ No data found for ESP32";
+        notification.style.backgroundColor = "#fff8dc";
+        notification.style.color = "#555";
       }
     })
     .catch((error) => {
-      console.error("Error:", error);
-      statusBox.textContent = "❌ Error checking ESP32 Status";
-    });
-}
+      console.error("Error reading
