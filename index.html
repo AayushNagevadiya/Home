@@ -1,29 +1,17 @@
-<!-- index.html -->
+<!-- home.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Smart Home Login</title>
+  <title>Smart Home Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="loginError" class="error"></p>
+  <div class="container">
+    <h1>Smart Home Dashboard</h1>
+    <button id="checkStatusBtn">Check ESP32 Status</button>
+    <p id="statusNotification"></p>
   </div>
 
-  <script>
-    function login() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      if (username === '12345' && password === 'Aayush@1111') {
-        window.location.href = 'home.html';
-      } else {
-        document.getElementById('loginError').innerText = 'Invalid credentials';
-      }
-    }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
