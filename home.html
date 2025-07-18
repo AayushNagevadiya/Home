@@ -1,52 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation Dashboard</title>
+  <title>Smart Home Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="home-container">
-    <h2>Welcome to Smart Home</h2>
-    <button onclick="checkESP32()">Check ESP32 Status</button>
-    <p id="status-text">Status: Not checked</p>
+  <div class="container">
+    <h2>ESP32 Connection Check</h2>
+    <button id="checkStatusBtn">Check ESP32 Status</button>
+    <p id="statusText"></p>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-      authDomain: "home-automation-89830.firebaseapp.com",
-      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830",
-      storageBucket: "home-automation-89830.appspot.com",
-      messagingSenderId: "186474964680",
-      appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
-      measurementId: "G-5RB59X6NNL"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
-
-    window.checkESP32 = function () {
-      const statusRef = ref(db, 'status/lastSeen');
-      onValue(statusRef, (snapshot) => {
-        const lastSeen = snapshot.val();
-        const now = Date.now();
-        const diff = now - lastSeen;
-
-        const statusText = document.getElementById('status-text');
-        if (diff < 10000) {
-          statusText.innerText = "Status: ✅ ESP32 is ONLINE";
-        } else {
-          statusText.innerText = "Status: ❌ ESP32 is OFFLINE";
-        }
-      });
-    };
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
