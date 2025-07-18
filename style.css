@@ -1,77 +1,55 @@
-/* Light blue background and modern layout */
-body {
-  margin: 0;
-  padding: 0;
-  background: #e3f2fd; /* Light sky blue */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+// script.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-/* White card container */
-.container {
-  background-color: #ffffff;
-  padding: 40px 50px;
-  border-radius: 20px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-}
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+  authDomain: "home-automation-89830.firebaseapp.com",
+  databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+  projectId: "home-automation-89830",
+  storageBucket: "home-automation-89830.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-/* Title */
-h1 {
-  font-size: 30px;
-  color: #0277bd;
-  margin-bottom: 30px;
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-/* Status check button */
-button {
-  background-color: #0288d1;
-  color: #fff;
-  font-size: 18px;
-  padding: 15px 25px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s ease;
-}
+// Notification function
+window.checkESP32Status = async function () {
+  const statusRef = ref(db, "status/lastSeen");
+  const notification = document.getElementById("statusNotification");
 
-button:hover {
-  background-color: #0277bd;
-}
+  try {
+    const snapshot = await get(statusRef);
+    if (snapshot.exists()) {
+      const lastSeen = snapshot.val();
+      const currentTime = Date.now();
+      const diff = currentTime - lastSeen;
 
-/* ESP32 Status notification */
-.notification {
-  margin-top: 30px;
-  padding: 15px;
-  font-size: 17px;
-  background-color: #b3e5fc;
-  color: #01579b;
-  border-radius: 10px;
-  font-weight: 600;
-}
+      if (diff < 10000) {
+        notification.textContent = "✅ ESP32 is Online";
+        notification.style.backgroundColor = "#c8e6c9"; // light green
+        notification.style.color = "#256029";
+      } else {
+        notification.textContent = "❌ ESP32 is Offline";
+        notification.style.backgroundColor = "#ffcdd2"; // light red
+        notification.style.color = "#b71c1c";
+      }
+    } else {
+      notification.textContent = "❌ Status not found";
+      notification.style.backgroundColor = "#ffcdd2";
+      notification.style.color = "#b71c1c";
+    }
 
-/* Responsive design */
-@media (max-width: 480px) {
-  .container {
-    padding: 30px 20px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  button {
-    font-size: 16px;
-    padding: 14px;
-  }
-
-  .notification {
-    font-size: 16px;
+    notification.style.display = "block";
+  } catch (error) {
+    notification.textContent = "❌ Error checking ESP32 Status";
+    notification.style.backgroundColor = "#ffcdd2";
+    notification.style.color = "#b71c1c";
+    notification.style.display = "block";
+    console.error("Error reading Firebase:", error);
   }
 }
