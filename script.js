@@ -1,49 +1,48 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-    authDomain: "home-automation-89830.firebaseapp.com",
-    databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-    projectId: "home-automation-89830",
-    storageBucket: "home-automation-89830.appspot.com",
-    messagingSenderId: "your_sender_id",
-    appId: "your_app_id"
-  };
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+  authDomain: "home-automation-89830.firebaseapp.com",
+  databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+  projectId: "home-automation-89830",
+  storageBucket: "home-automation-89830.appspot.com",
+  messagingSenderId: "663840454485",
+  appId: "1:663840454485:web:6b7c4aa89a56b89b4c3ff4",
+  measurementId: "G-N8EN57Z5FZ"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-  window.login = function () {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-
-    if (user === "12345" && pass === "Aayush@1111") {
-      checkESP32Status(); // check immediately
-      setInterval(checkESP32Status, 5000); // repeat every 5s
-    } else {
-      alert("Invalid username or password!");
-    }
-  };
-
-  function checkESP32Status() {
-    const statusRef = ref(db, "/status/lastSeen");
-    onValue(statusRef, (snapshot) => {
+// Check ESP32 status
+async function checkESP32Status() {
+  const statusBox = document.getElementById('esp32-status');
+  try {
+    const snapshot = await get(ref(database, "/status/lastSeen"));
+    if (snapshot.exists()) {
       const lastSeen = snapshot.val();
       const now = Date.now();
-      const timeDiff = now - lastSeen;
-      const statusDiv = document.getElementById("esp32Status");
-
-      if (lastSeen && timeDiff < 10000) {
-        statusDiv.textContent = "✅ ESP32 is ONLINE";
-        statusDiv.className = "notification online";
-        statusDiv.style.display = "block";
+      const diff = now - lastSeen;
+      if (diff < 10000) {
+        statusBox.textContent = "✅ ESP32 is ONLINE";
+        statusBox.style.backgroundColor = "#d0f0c0";
+        statusBox.style.color = "#2e7d32";
       } else {
-        statusDiv.textContent = "❌ ESP32 is OFFLINE";
-        statusDiv.className = "notification offline";
-        statusDiv.style.display = "block";
+        statusBox.textContent = "❌ ESP32 is OFFLINE";
+        statusBox.style.backgroundColor = "#ffcccb";
+        statusBox.style.color = "#b71c1c";
       }
-    });
+    } else {
+      statusBox.textContent = "❌ ESP32 status not available";
+    }
+  } catch (error) {
+    statusBox.textContent = "❌ Error checking ESP32 status";
+    console.error(error);
   }
-</script>
+}
+
+// Run on page load and every 5 seconds
+checkESP32Status();
+setInterval(checkESP32Status, 5000);
