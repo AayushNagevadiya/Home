@@ -3,16 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Home Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>ESP32 Connection Status</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h2>ESP32 Connection Check</h2>
-    <button id="checkStatusBtn">Check ESP32 Status</button>
-    <p id="statusText"></p>
+  <div class="home-container">
+    <h1>Welcome, Aayush</h1>
+    <button id="checkBtn" onclick="checkESP32()">Check ESP32 Connection</button>
+    <p id="status"></p>
   </div>
 
-  <script type="module" src="script.js"></script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+      authDomain: "home-automation-89830.firebaseapp.com",
+      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+      projectId: "home-automation-89830",
+      storageBucket: "home-automation-89830.appspot.com",
+      messagingSenderId: "186474964680",
+      appId: "1:186474964680:web:768fbe82134fb1a435e7fd",
+      measurementId: "G-5RB59X6NNL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function checkESP32() {
+      const statusText = document.getElementById("status");
+      const statusRef = ref(db, "/status/lastSeen");
+
+      get(statusRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const lastSeen = snapshot.val();
+          const now = Date.now();
+          const diff = now - lastSeen;
+
+          if (diff < 10000) {
+            statusText.textContent = "✅ ESP32 is Online";
+            statusText.style.color = "green";
+          } else {
+            statusText.textContent = "❌ ESP32 is Offline";
+            statusText.style.color = "red";
+          }
+        } else {
+          statusText.textContent = "⚠ No data found.";
+        }
+      }).catch((error) => {
+        statusText.textContent = "Error: " + error;
+      });
+    }
+  </script>
 </body>
 </html>
