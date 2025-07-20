@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome to Home</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js"></script>
+  <!-- Firebase SDK 12.0.0 -->
+  <script type="module" src="script.js" defer></script>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Welcome to Home</h1>
-    <button onclick="checkESP32()">Check ESP32 Connection</button>
-  </div>
+  <div class="container home-page">
+    <h1 class="main-title">Welcome to Home</h1>
 
-  <script src="script.js"></script>
+    <button id="checkEsp32Btn" class="check-btn">Check ESP32 Connection</button>
+  </div>
 </body>
 </html>
