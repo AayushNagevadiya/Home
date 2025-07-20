@@ -1,48 +1,89 @@
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: #fff;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #d0e9f9, #88c9f0);
+  color: #333;
+  text-align: center;
+}
+
+.login-body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 30px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+.login-container {
+  background-color: #ffffffcc;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  width: 350px;
 }
 
-.login-container, .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 300px;
+.home-icon {
+  font-size: 50px;
+  margin-bottom: 10px;
 }
 
-input {
-  padding: 10px;
-  margin: 10px 0;
+.login-container h2 {
+  color: #0077cc;
+  margin-bottom: 20px;
+}
+
+.login-container input {
+  display: block;
   width: 100%;
-  border: none;
-  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
 }
 
-button {
-  padding: 10px;
+.login-container button {
   width: 100%;
-  border: none;
-  background-color: #00c6ff;
+  padding: 12px;
+  background-color: #0077cc;
   color: white;
-  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
   cursor: pointer;
-  border-radius: 8px;
 }
 
-button:hover {
-  background-color: #0072ff;
+.login-container button:hover {
+  background-color: #005fa3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.home-body {
+  padding-top: 100px;
+  background: linear-gradient(to right, #d0e9f9, #88c9f0);
+  height: 100vh;
+}
+
+.home-title {
+  font-size: 32px;
+  margin-bottom: 30px;
+  color: #005fa3;
+}
+
+.container {
+  background-color: #ffffffcc;
+  padding: 30px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.notification {
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 10px;
+  display: none;
+  color: black;
 }
