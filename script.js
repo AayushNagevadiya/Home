@@ -1,45 +1,59 @@
-// ✅ Firebase & ESP32 Check (script.js)
+// Firebase v12.0.0 initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-// Firebase Configuration
+// Your Firebase config (replace if needed)
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
   storageBucket: "home-automation-89830.appspot.com",
-  messagingSenderId: "1058472573300",
-  appId: "1:1058472573300:web:5f44bcd0dcf680b5c937a3"
+  messagingSenderId: "187771650350",
+  appId: "1:187771650350:web:190356c951e3e9a37325cb"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// ESP32 Status Check on Button Press
-window.checkESP32Status = async function () {
-  try {
-    const statusRef = ref(database, "/status/lastSeen");
-    const snapshot = await get(statusRef);
-    const lastSeen = snapshot.val();
+let intervalId = null;
 
-    const now = Date.now();
-    const diff = now - lastSeen;
+document.getElementById("checkBtn").addEventListener("click", () => {
+  checkESP32Status(); // Check once on click
 
-    const notification = document.getElementById("notification");
-    const roomSection = document.getElementById("roomSection");
+  // Clear any previous interval to avoid multiple checks
+  if (intervalId) clearInterval(intervalId);
 
-    if (diff < 10000) {
-      notification.textContent = "✅ ESP32 is Online";
-      notification.style.backgroundColor = "#c8f7c5";
-      roomSection.style.display = "block";
-    } else {
-      notification.textContent = "❌ ESP32 is Offline";
-      notification.style.backgroundColor = "#ffc9c9";
-      roomSection.style.display = "none";
-    }
-  } catch (err) {
-    console.error("Error checking status:", err);
-  }
-};
+  // Check status every 5 seconds
+  intervalId = setInterval(() => {
+    checkESP32Status();
+  }, 5000);
+});
+
+function checkESP32Status() {
+  const statusRef = ref(database, "/status/lastSeen");
+  get(statusRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const lastSeen = snapshot.val();
+        const now = Date.now();
+        const diff = now - lastSeen;
+
+        const notif = document.getElementById("espStatus");
+
+        if (diff <= 10000) {
+          notif.textContent = "ESP32 is online ✅";
+          notif.style.color = "green";
+        } else {
+          notif.textContent = "ESP32 is offline ❌";
+          notif.style.color = "red";
+        }
+      } else {
+        document.getElementById("espStatus").textContent = "Status not found ❓";
+      }
+    })
+    .catch((error) => {
+      console.error("Error reading Firebase:", error);
+    });
+}
