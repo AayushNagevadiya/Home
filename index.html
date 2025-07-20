@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation Login Page</title>
+  <title>Login - Home Automation</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="login-container glass">
-    <div class="home-icon">🏠</div>
-    <h2>Home Automation Login Page</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <p id="error-message"></p>
+  <div class="login-container">
+    <h1 class="title">Home Automation Login Page</h1>
+    <div class="login-box">
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p id="error-msg"></p>
+    </div>
   </div>
 
   <script>
     function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      if (username === "aayush" && password === "Aayush@1982") {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      if (user === "aayush" && pass === "Aayush@1982") {
         window.location.href = "home.html";
       } else {
-        document.getElementById("error-message").innerText = "Invalid credentials!";
+        document.getElementById("error-msg").textContent = "Invalid credentials!";
       }
     }
   </script>
