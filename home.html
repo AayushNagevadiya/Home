@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome to Home Automation</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="home-container glass">
-    <h2>Welcome to Home Automation</h2>
-    <button onclick="checkESP32Status()">Check ESP32 Status</button>
-    <div id="notification"></div>
+  <div class="dashboard">
+    <h1 class="title">Welcome to Home Automation</h1>
+    
+    <div class="card">
+      <button onclick="checkESP32Status()">Check ESP32 Connection</button>
+      <p id="notification" class="notification"></p>
+    </div>
+
+    <div id="roomSection" style="display:none;">
+      <!-- You can add LED buttons here -->
+      <p class="led-label">ESP32 Connected — LED Controls Here</p>
+    </div>
   </div>
 
   <script type="module" src="script.js"></script>
