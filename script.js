@@ -1,50 +1,45 @@
-// Firebase 12.0.0 Setup
+// ✅ Firebase & ESP32 Check (script.js)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-// Your Firebase config
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   authDomain: "home-automation-89830.firebaseapp.com",
   databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
   projectId: "home-automation-89830",
+  storageBucket: "home-automation-89830.appspot.com",
+  messagingSenderId: "1058472573300",
+  appId: "1:1058472573300:web:5f44bcd0dcf680b5c937a3"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const database = getDatabase(app);
 
-// Check ESP32 connection on button press
+// ESP32 Status Check on Button Press
 window.checkESP32Status = async function () {
-  const statusRef = ref(db, "status/lastSeen");
   try {
+    const statusRef = ref(database, "/status/lastSeen");
     const snapshot = await get(statusRef);
-    if (snapshot.exists()) {
-      const lastSeen = snapshot.val();
-      const now = Date.now();
-      const diff = now - lastSeen;
-      const isOnline = diff < 10000;
+    const lastSeen = snapshot.val();
 
-      const message = isOnline
-        ? "✅ ESP32 is ONLINE"
-        : "❌ ESP32 is OFFLINE";
-      document.getElementById("espStatus").textContent = message;
-      document.getElementById("espStatus").style.color = isOnline ? "green" : "red";
+    const now = Date.now();
+    const diff = now - lastSeen;
+
+    const notification = document.getElementById("notification");
+    const roomSection = document.getElementById("roomSection");
+
+    if (diff < 10000) {
+      notification.textContent = "✅ ESP32 is Online";
+      notification.style.backgroundColor = "#c8f7c5";
+      roomSection.style.display = "block";
     } else {
-      document.getElementById("espStatus").textContent = "No data found!";
+      notification.textContent = "❌ ESP32 is Offline";
+      notification.style.backgroundColor = "#ffc9c9";
+      roomSection.style.display = "none";
     }
-  } catch (error) {
-    console.error("Error reading Firebase:", error);
-    document.getElementById("espStatus").textContent = "Error checking ESP32!";
-  }
-};
-
-// Login logic
-window.login = function () {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  if (username === "aayush" && password === "Aayush@1982") {
-    window.location.href = "home.html";
-  } else {
-    alert("Invalid username or password");
+  } catch (err) {
+    console.error("Error checking status:", err);
   }
 };
