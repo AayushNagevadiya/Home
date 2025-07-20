@@ -1,20 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <title>Smart Home</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #e0f7fa;
+      text-align: center;
+      padding-top: 50px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 20px;
+      border: none;
+      background-color: #0288d1;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #status {
+      font-size: 20px;
+      margin-top: 20px;
+      color: #004d40;
+    }
+  </style>
 </head>
-<body class="home-body">
-  <div class="home-container">
-    <h1>Welcome to Home Automation</h1>
-    <button onclick="checkESP32()">Check ESP32 Connection</button>
-    <p id="statusMsg"></p>
-  </div>
+<body>
 
-  <script src="script.js"></script>
+  <h1>Smart Home Dashboard</h1>
+
+  <button onclick="checkESP32()">Check ESP32 Connection</button>
+  <div id="status">ESP32 status: Unknown</div>
+
+  <!-- Firebase App (core SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <!-- Firebase Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+      authDomain: "home-automation-89830.firebaseapp.com",
+      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
+      projectId: "home-automation-89830",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Check ESP32 status
+    function checkESP32() {
+      const statusDiv = document.getElementById('status');
+
+      database.ref('/status/lastSeen').get().then((snapshot) => {
+        if (snapshot.exists()) {
+          const lastSeen = snapshot.val();
+          const now = Date.now();
+          const diff = now - lastSeen;
+
+          if (diff < 10000) {
+            statusDiv.innerText = "ESP32 status: ✅ Online";
+            statusDiv.style.color = "green";
+          } else {
+            statusDiv.innerText = "ESP32 status: ❌ Offline";
+            statusDiv.style.color = "red";
+          }
+        } else {
+          statusDiv.innerText = "ESP32 status: ❓ Not Available";
+          statusDiv.style.color = "gray";
+        }
+      }).catch((error) => {
+        console.error("Error getting status:", error);
+        statusDiv.innerText = "ESP32 status: ❌ Error";
+        statusDiv.style.color = "red";
+      });
+    }
+  </script>
 </body>
 </html>
