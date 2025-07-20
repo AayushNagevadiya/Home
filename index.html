@@ -1,36 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation Login</title>
-  <link rel="stylesheet" href="style.css" />
-  <script>
-    function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("error-msg");
-
-      // Hardcoded credentials
-      if (username === "aayush" && password === "Aayush@1982") {
-        window.location.href = "home.html";
-      } else {
-        errorMsg.textContent = "❌ Invalid username or password!";
-      }
+  <meta charset="UTF-8">
+  <title>Home Automation Login Page</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+  <style>
+    .home-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      color: #ffffff;
     }
-  </script>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1946/1946433.png" />
+  </style>
 </head>
-<body class="glass">
-  <div class="login-container">
-    <div class="home-icon">
-      🏠
-    </div>
-    <h2>Home Automation Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+<body>
+  <div class="login-container glass">
+    <div class="home-icon">🏠</div>
+    <h2>Home Automation Login Page</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
-    <p id="error-msg"></p>
+    <p id="error-message" style="color: red; margin-top: 10px;"></p>
   </div>
 </body>
 </html>
