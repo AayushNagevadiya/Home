@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <meta charset="UTF-8">
+  <title>ESP32 Control Panel</title>
+  <link rel="stylesheet" href="style.css">
   <script defer src="script.js"></script>
 </head>
-<body class="glass">
-  <div class="dashboard-container">
-    <h2>Welcome to Home Automation</h2>
-    <button id="check-btn" onclick="checkESP32()">✅ Check ESP32 Connection</button>
-    <button id="disconnect-btn" onclick="disconnectESP32()">❌ Disconnect ESP32</button>
-    <p id="status-msg"></p>
+<body>
+  <div class="container glass">
+    <h2>ESP32 Control Panel</h2>
+    <button onclick="checkESP32Status()">Check ESP32 Connection</button>
+    <p id="esp32-status" style="margin-top: 20px;"></p>
   </div>
 </body>
 </html>
