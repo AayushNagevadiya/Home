@@ -1,44 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Welcome to Home</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- Firebase SDK v12 -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-      authDomain: "home-automation-89830.firebaseapp.com",
-      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    window.checkESP32 = function () {
-      const lastSeenRef = ref(db, 'status/lastSeen');
-      onValue(lastSeenRef, (snapshot) => {
-        const lastSeen = snapshot.val();
-        const now = Date.now();
-        const diff = now - lastSeen;
-
-        if (diff < 10000) {
-          alert("ESP32 is Online ✅");
-        } else {
-          alert("ESP32 is Offline ❌");
-        }
-      });
-    };
-  </script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js"></script>
 </head>
 <body>
-  <div class="home-page">
+  <div class="login-container">
     <h1>Welcome to Home</h1>
     <button onclick="checkESP32()">Check ESP32 Connection</button>
   </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
