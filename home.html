@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ESP32 Control Panel</title>
-  <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
+  <meta charset="UTF-8" />
+  <title>Welcome to Home</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="script.js"></script>
 </head>
-<body>
-  <div class="container glass">
-    <h2>ESP32 Control Panel</h2>
-    <button onclick="checkESP32Status()">Check ESP32 Connection</button>
-    <p id="esp32-status" style="margin-top: 20px;"></p>
+<body class="home-body">
+  <h1 class="home-title">Welcome to Home</h1>
+  <div class="container">
+    <button onclick="checkESP32Status()">Check ESP32 Status</button>
+    <div id="notification" class="notification" style="display: none;"></div>
   </div>
 </body>
 </html>
