@@ -3,26 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Smart Home</title>
+  <title>Home Automation Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="login-body">
   <div class="login-container">
-    <h2>Smart Home Login</h2>
+    <div class="home-icon">🏠</div>
+    <h1 class="login-title">Home Automation Login Page</h1>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
     <button onclick="login()">Login</button>
-    <p id="error" class="error-message"></p>
+    <p id="error" class="error-msg"></p>
   </div>
 
   <script>
     function login() {
       const user = document.getElementById("username").value;
       const pass = document.getElementById("password").value;
+
       if (user === "aayush" && pass === "Aayush@1982") {
         window.location.href = "home.html";
       } else {
-        document.getElementById("error").textContent = "Invalid username or password";
+        document.getElementById("error").textContent = "Invalid credentials!";
       }
     }
   </script>
