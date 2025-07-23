@@ -3,135 +3,196 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Home Login</title>
+  <title>Home Automation Login</title>
+  <link rel="icon" href="https://img.icons8.com/fluency/48/smart-home-automation.png">
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif;
-    }
     body {
-      background: url('https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
-      height: 100vh; display: flex; justify-content: center; align-items: center;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #cbefff, #e6faff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
+
     .container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 40px; border-radius: 15px;
-      backdrop-filter: blur(10px); width: 300px;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-      text-align: center; color: white;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 350px;
     }
-    input {
-      width: 100%; padding: 10px; margin: 10px 0;
-      border: none; border-radius: 5px;
+
+    .container h2 {
+      margin-bottom: 30px;
+      color: #0077b6;
     }
+
+    input[type="text"], input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #f0f9ff;
+      font-size: 16px;
+    }
+
     button {
-      width: 100%; padding: 10px;
-      border: none; border-radius: 5px;
-      background-color: #4CAF50; color: white;
-      cursor: pointer; font-weight: bold;
-    }
-    .hidden { display: none; }
-    .status { margin: 10px 0; font-weight: bold; }
-    .led-control {
+      padding: 12px 24px;
+      border: none;
+      background-color: #0077b6;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
       margin-top: 20px;
     }
-    .led-button {
-      padding: 10px 20px; font-size: 16px;
-      margin: 5px;
-      border: none;
-      border-radius: 8px;
-      color: white; cursor: pointer;
+
+    button:hover {
+      background-color: #005f8f;
     }
-    #onBtn { background-color: #28a745; }
-    #offBtn { background-color: #dc3545; }
+
+    #homePage {
+      display: none;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .room-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #00b4d8;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .leds {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .led-btn {
+      width: 120px;
+      height: 60px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="container" id="login-box">
-    <h2>Home Automation Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+  <div class="container" id="loginPage">
+    <h2>🏠 Home Automation Login</h2>
+    <input type="text" id="username" placeholder="Username" /><br>
+    <input type="password" id="password" placeholder="Password" /><br>
     <button onclick="login()">Login</button>
   </div>
 
-  <div class="container hidden" id="dashboard">
-    <h2>Welcome to Smart Home</h2>
-    <div class="status" id="esp-status">Checking ESP32 status...</div>
-    <div class="led-control hidden" id="led-controls">
-      <p>LED 1 Control</p>
-      <button id="onBtn" class="led-button" onclick="setLED(true)">Turn ON</button>
-      <button id="offBtn" class="led-button" onclick="setLED(false)">Turn OFF</button>
-    </div>
+  <div class="container" id="homePage">
+    <h2>👋 Welcome</h2>
+    <button onclick="checkESP32()">Check ESP32 Status</button>
+    <div class="status" id="statusText">Status: Unknown</div>
+    <button class="room-btn" id="roomBtn" onclick="showLoads()">Room 1 💡</button>
+    <div class="leds" id="ledControls" style="display:none"></div>
   </div>
 
+  <!-- Firebase Setup -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
       authDomain: "home-automation-89830.firebaseapp.com",
       databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830",
-      storageBucket: "home-automation-89830.appspot.com",
-      messagingSenderId: "483221866351",
-      appId: "1:483221866351:web:113574005f4a0c7476ae7a"
+      projectId: "home-automation-89830"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Login Function
+    // Login check
     window.login = function () {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
-      if (user === 'aayush' && pass === 'Aayush@1982') {
-        document.getElementById('login-box').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        checkESPStatus();
-        setInterval(checkESPStatus, 5000);
-        listenToLED();
+      const u = document.getElementById("username").value;
+      const p = document.getElementById("password").value;
+      if (u === "aayush" && p === "Aayush@1982") {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("homePage").style.display = "block";
+        checkESP32(); // Initial check
+        setInterval(checkESP32, 5000); // Auto-check every 5 sec
       } else {
-        alert('Invalid username or password');
+        alert("Invalid Credentials");
       }
     };
 
-    // Check ESP32 Online Status
-    function checkESPStatus() {
-      const statusRef = ref(db, '/status/lastSeen');
-      get(statusRef).then(snapshot => {
-        if (snapshot.exists()) {
-          const lastSeen = snapshot.val();
-          const now = Date.now();
-          const diff = now - lastSeen;
-          const statusText = document.getElementById('esp-status');
-          if (diff < 10000) {
-            statusText.innerText = "ESP32 is ONLINE ✅";
-            statusText.style.color = "lightgreen";
-            document.getElementById('led-controls').classList.remove('hidden');
-          } else {
-            statusText.innerText = "ESP32 is OFFLINE ❌";
-            statusText.style.color = "red";
-            document.getElementById('led-controls').classList.add('hidden');
-          }
-        }
-      });
-    }
+    // ESP32 Status Check
+    window.checkESP32 = async function () {
+      const statusRef = ref(db, "/status/lastSeen");
+      const snap = await get(statusRef);
+      const statusText = document.getElementById("statusText");
+      const roomBtn = document.getElementById("roomBtn");
 
-    // Update LED State
-    window.setLED = function (state) {
-      const ledRef = ref(db, '/leds/led1');
-      set(ledRef, state);
+      if (snap.exists()) {
+        const lastSeen = snap.val();
+        const now = Date.now();
+        if (now - lastSeen < 10000) {
+          statusText.innerText = "ESP32 is ONLINE ✅";
+          statusText.style.color = "green";
+          roomBtn.style.display = "inline-block";
+        } else {
+          statusText.innerText = "ESP32 is OFFLINE ❌";
+          statusText.style.color = "red";
+          roomBtn.style.display = "none";
+          document.getElementById("ledControls").style.display = "none";
+        }
+      } else {
+        statusText.innerText = "ESP32 status not found";
+        statusText.style.color = "gray";
+        roomBtn.style.display = "none";
+      }
     };
 
-    // Auto-Update LED Button UI
-    function listenToLED() {
-      const ledRef = ref(db, '/leds/led1');
-      onValue(ledRef, (snapshot) => {
-        const val = snapshot.val();
-        document.getElementById('onBtn').disabled = val === true;
-        document.getElementById('offBtn').disabled = val === false;
-      });
-    }
+    // Show Load Buttons
+    window.showLoads = function () {
+      const ledControls = document.getElementById("ledControls");
+      ledControls.innerHTML = "";
+      ledControls.style.display = "flex";
+      for (let i = 1; i <= 8; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = "Load " + i + " OFF";
+        btn.className = "led-btn";
+        btn.style.backgroundColor = "#caf0f8";
+        btn.onclick = function () {
+          const ledRef = ref(db, "/leds/led" + i);
+          const current = btn.innerText.includes("ON");
+          set(ledRef, !current);
+          btn.innerText = `Load ${i} ${current ? "OFF" : "ON"}`;
+          btn.style.backgroundColor = current ? "#caf0f8" : "#90e0ef";
+        };
+        ledControls.appendChild(btn);
+      }
+    };
   </script>
 </body>
 </html>
