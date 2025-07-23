@@ -122,19 +122,20 @@
       }
     };
 
-    // Check ESP32 status manually
+    // Manual ESP32 check
     window.checkESP32Status = async function () {
       const snapshot = await get(statusRef);
-      const lastSeen = snapshot.val();
+      const lastSeen = Number(snapshot.val());
       updateESPStatus(lastSeen);
     };
 
-    // Update UI based on lastSeen
+    // Status checker
     function updateESPStatus(lastSeen) {
       const now = Date.now();
       const diff = now - lastSeen;
       const statusText = document.getElementById("espStatus");
       const moodBtn = document.getElementById("moodLightBtn");
+
       if (diff < 10000) {
         statusText.innerText = "Status: 🟢 ESP32 is Online";
         moodBtn.style.display = "inline-block";
@@ -145,20 +146,20 @@
       }
     }
 
-    // Show LED panel
+    // Show LED controls
     window.toggleMoodLightPanel = function () {
       document.getElementById("ledPanel").style.display = "flex";
     };
 
-    // Control LED state
+    // Control LED
     window.controlLED = function (state) {
       set(ledRef, state);
     };
 
-    // Auto status checker every 5s
+    // Live update check
     function autoCheckESP32() {
       onValue(statusRef, (snapshot) => {
-        const lastSeen = snapshot.val();
+        const lastSeen = Number(snapshot.val());
         updateESPStatus(lastSeen);
       });
     }
