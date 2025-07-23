@@ -36,9 +36,13 @@
     }
     .led-button {
       padding: 10px 20px; font-size: 16px;
-      background-color: #ff9800; border: none;
-      border-radius: 8px; color: white; cursor: pointer;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      color: white; cursor: pointer;
     }
+    #onBtn { background-color: #28a745; }
+    #offBtn { background-color: #dc3545; }
   </style>
 </head>
 <body>
@@ -54,12 +58,12 @@
     <div class="status" id="esp-status">Checking ESP32 status...</div>
     <div class="led-control hidden" id="led-controls">
       <p>LED 1 Control</p>
-      <button class="led-button" onclick="toggleLED()">Toggle LED</button>
+      <button id="onBtn" class="led-button" onclick="setLED(true)">Turn ON</button>
+      <button id="offBtn" class="led-button" onclick="setLED(false)">Turn OFF</button>
     </div>
   </div>
 
   <script type="module">
-    // Firebase v12 SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
@@ -85,10 +89,11 @@
         document.getElementById('dashboard').classList.remove('hidden');
         checkESPStatus();
         setInterval(checkESPStatus, 5000);
+        listenToLED();
       } else {
         alert('Invalid username or password');
       }
-    }
+    };
 
     // Check ESP32 Online Status
     function checkESPStatus() {
@@ -112,13 +117,19 @@
       });
     }
 
-    // Toggle LED 1
-    function toggleLED() {
+    // Update LED State
+    window.setLED = function (state) {
       const ledRef = ref(db, '/leds/led1');
-      get(ledRef).then(snapshot => {
-        const current = snapshot.val() === true;
-        set(ledRef, !current);
-        alert("LED is turned " + (!current ? "ON" : "OFF"));
+      set(ledRef, state);
+    };
+
+    // Auto-Update LED Button UI
+    function listenToLED() {
+      const ledRef = ref(db, '/leds/led1');
+      onValue(ledRef, (snapshot) => {
+        const val = snapshot.val();
+        document.getElementById('onBtn').disabled = val === true;
+        document.getElementById('offBtn').disabled = val === false;
       });
     }
   </script>
