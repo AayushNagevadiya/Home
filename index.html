@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation Login</title>
+  <title>Home Automation</title>
   <link rel="icon" href="https://img.icons8.com/fluency/48/smart-home-automation.png">
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #cbefff, #e6faff);
+      background: url('https://img.freepik.com/free-photo/modern-living-room-style_53876-145541.jpg') no-repeat center center/cover;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,7 +17,7 @@
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 40px;
@@ -27,7 +27,7 @@
     }
 
     .container h2 {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       color: #0077b6;
     }
 
@@ -54,10 +54,6 @@
 
     button:hover {
       background-color: #005f8f;
-    }
-
-    #homePage {
-      display: none;
     }
 
     .status {
@@ -93,6 +89,10 @@
       border: none;
       cursor: pointer;
     }
+
+    #homePage {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -107,11 +107,10 @@
     <h2>👋 Welcome</h2>
     <button onclick="checkESP32()">Check ESP32 Status</button>
     <div class="status" id="statusText">Status: Unknown</div>
-    <button class="room-btn" id="roomBtn" onclick="showLoads()">Room 1 💡</button>
+    <button class="room-btn" id="roomBtn" onclick="showLoads()">💡 Mood Light Control</button>
     <div class="leds" id="ledControls" style="display:none"></div>
   </div>
 
-  <!-- Firebase Setup -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import {
@@ -132,21 +131,21 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Login check
+    // Login logic
     window.login = function () {
       const u = document.getElementById("username").value;
       const p = document.getElementById("password").value;
       if (u === "aayush" && p === "Aayush@1982") {
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("homePage").style.display = "block";
-        checkESP32(); // Initial check
-        setInterval(checkESP32, 5000); // Auto-check every 5 sec
+        checkESP32();
+        setInterval(checkESP32, 5000);
       } else {
         alert("Invalid Credentials");
       }
     };
 
-    // ESP32 Status Check
+    // ESP32 status check
     window.checkESP32 = async function () {
       const statusRef = ref(db, "/status/lastSeen");
       const snap = await get(statusRef);
@@ -173,23 +172,26 @@
       }
     };
 
-    // Show Load Buttons
+    // LED Control Logic
     window.showLoads = function () {
       const ledControls = document.getElementById("ledControls");
       ledControls.innerHTML = "";
       ledControls.style.display = "flex";
-      for (let i = 1; i <= 8; i++) {
+
+      for (let i = 1; i <= 1; i++) {
         const btn = document.createElement("button");
-        btn.innerText = "Load " + i + " OFF";
+        btn.innerText = "LED OFF";
         btn.className = "led-btn";
         btn.style.backgroundColor = "#caf0f8";
+
         btn.onclick = function () {
-          const ledRef = ref(db, "/leds/led" + i);
-          const current = btn.innerText.includes("ON");
-          set(ledRef, !current);
-          btn.innerText = `Load ${i} ${current ? "OFF" : "ON"}`;
-          btn.style.backgroundColor = current ? "#caf0f8" : "#90e0ef";
+          const ledRef = ref(db, "/leds/led1");
+          const isOn = btn.innerText.includes("ON");
+          set(ledRef, !isOn);
+          btn.innerText = isOn ? "LED OFF" : "LED ON";
+          btn.style.backgroundColor = isOn ? "#caf0f8" : "#90e0ef";
         };
+
         ledControls.appendChild(btn);
       }
     };
