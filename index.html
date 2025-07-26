@@ -70,10 +70,23 @@
     input {
       width: 100%;
       padding: 14px;
-      margin: 15px 0 25px;
+      margin: 15px 0 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 18px;
+    }
+    .password-container {
+      position: relative;
+    }
+    .password-container svg {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      color: #004d40;
     }
     .status {
       font-weight: bold;
@@ -139,14 +152,23 @@
   <div class="form-container hidden" id="login-screen">
     <h2>Login</h2>
     <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+    <div class="password-container">
+      <input type="password" id="password" placeholder="Password" />
+      <svg onclick="togglePassword()" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
+      </svg>
+    </div>
     <button onclick="login()">Login</button>
   </div>
 
   <div class="form-container hidden" id="dashboard">
     <button class="back-btn" onclick="location.reload()">←</button>
     <h2>Home Appliance</h2>
-    <button onclick="checkESP()">Connect ESP32</button>
+    <button onclick="checkESP()">Check ESP32</button>
     <div class="status" id="esp-status">ESP32 status: Unknown</div>
     <div class="room-grid">
       <div class="room-card disabled" id="room1" onclick="showRoom1()">
@@ -195,12 +217,16 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     let led1State = false;
 
     window.showLogin = () => {
       document.getElementById("start-screen").classList.add("hidden");
       document.getElementById("login-screen").classList.remove("hidden");
+    }
+
+    window.togglePassword = () => {
+      const passwordField = document.getElementById("password");
+      passwordField.type = passwordField.type === "password" ? "text" : "password";
     }
 
     window.login = () => {
@@ -209,6 +235,7 @@
       if (user === "aayush" && pass === "Aayush@1982") {
         document.getElementById("login-screen").classList.add("hidden");
         document.getElementById("dashboard").classList.remove("hidden");
+        setInterval(checkESPStatusNow, 5000);
       } else {
         alert("Invalid login");
       }
@@ -228,7 +255,7 @@
       }
     }
 
-    window.checkESP = () => {
+    function checkESPStatusNow() {
       const statusRef = ref(db, "/status/lastSeen");
       get(statusRef).then((snapshot) => {
         if (snapshot.exists()) {
@@ -238,7 +265,9 @@
           updateESPStatus(diff < 10000);
         }
       });
-    };
+    }
+
+    window.checkESP = checkESPStatusNow;
 
     window.showRoom1 = () => {
       if (document.getElementById("room1").classList.contains("disabled")) return;
