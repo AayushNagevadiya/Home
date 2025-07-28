@@ -186,16 +186,7 @@
   <div class="form-container hidden" id="room1-screen">
     <button class="back-btn" onclick="backToDashboard()">←</button>
     <h2>Room 1 - LED Control</h2>
-    <div class="led-grid">
-      <button class="led-btn" onclick="toggleLED()" id="led1-btn">Turn ON</button>
-      <button class="led-btn" disabled>LED 2</button>
-      <button class="led-btn" disabled>LED 3</button>
-      <button class="led-btn" disabled>LED 4</button>
-      <button class="led-btn" disabled>LED 5</button>
-      <button class="led-btn" disabled>LED 6</button>
-      <button class="led-btn" disabled>LED 7</button>
-      <button class="led-btn" disabled>LED 8</button>
-    </div>
+    <div class="led-grid" id="led-grid"></div>
   </div>
 
   <script type="module">
@@ -214,17 +205,18 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let led1State = false;
+
+    const ledStates = Array(8).fill(false);
 
     window.showLogin = () => {
       document.getElementById("start-screen").classList.add("hidden");
       document.getElementById("login-screen").classList.remove("hidden");
-    }
+    };
 
     window.togglePassword = () => {
       const passwordField = document.getElementById("password");
       passwordField.type = passwordField.type === "password" ? "text" : "password";
-    }
+    };
 
     window.login = () => {
       const user = document.getElementById("username").value;
@@ -233,17 +225,10 @@
         document.getElementById("login-screen").classList.add("hidden");
         document.getElementById("dashboard").classList.remove("hidden");
         setInterval(checkESPStatusNow, 5000);
-        // Realtime LED listener
-        const ledRef = ref(db, "/leds/led1");
-        onValue(ledRef, (snapshot) => {
-          led1State = snapshot.val();
-          const btn = document.getElementById("led1-btn");
-          btn.textContent = led1State ? "Turn OFF" : "Turn ON";
-        });
       } else {
         alert("Invalid login");
       }
-    }
+    };
 
     function updateESPStatus(isOnline) {
       const statusText = document.getElementById("esp-status");
@@ -277,18 +262,36 @@
       if (document.getElementById("room1").classList.contains("disabled")) return;
       document.getElementById("dashboard").classList.add("hidden");
       document.getElementById("room1-screen").classList.remove("hidden");
-    }
+      renderLEDButtons();
+    };
 
     window.backToDashboard = () => {
       document.getElementById("room1-screen").classList.add("hidden");
       document.getElementById("dashboard").classList.remove("hidden");
+    };
+
+    function renderLEDButtons() {
+      const grid = document.getElementById("led-grid");
+      grid.innerHTML = "";
+      for (let i = 0; i < 8; i++) {
+        const btn = document.createElement("button");
+        btn.className = "led-btn";
+        btn.id = `led${i+1}-btn`;
+        btn.innerText = `Loading...`;
+        btn.onclick = () => toggleLED(i);
+        grid.appendChild(btn);
+
+        const ledRef = ref(db, `/leds/led${i+1}`);
+        onValue(ledRef, (snapshot) => {
+          ledStates[i] = snapshot.val();
+          btn.innerText = ledStates[i] ? `Turn OFF LED ${i+1}` : `Turn ON LED ${i+1}`;
+        });
+      }
     }
 
-    window.toggleLED = () => {
-      led1State = !led1State;
-      const btn = document.getElementById("led1-btn");
-      btn.textContent = led1State ? "Turn OFF" : "Turn ON";
-      set(ref(db, "/leds/led1"), led1State);
+    function toggleLED(i) {
+      const newState = !ledStates[i];
+      set(ref(db, `/leds/led${i+1}`), newState);
     }
   </script>
 </body>
