@@ -139,6 +139,12 @@
       color: #004d40;
       cursor: pointer;
     }
+    .temperature {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #00796b;
+    }
   </style>
 </head>
 <body>
@@ -186,6 +192,7 @@
   <div class="form-container hidden" id="room1-screen">
     <button class="back-btn" onclick="backToDashboard()">←</button>
     <h2>Room 1 - LED Control</h2>
+    <div class="temperature" id="temperature">Temperature: -- °C</div>
     <div class="led-grid" id="led-grid"></div>
   </div>
 
@@ -263,6 +270,7 @@
       document.getElementById("dashboard").classList.add("hidden");
       document.getElementById("room1-screen").classList.remove("hidden");
       renderLEDButtons();
+      subscribeTemperature();
     };
 
     window.backToDashboard = () => {
@@ -292,6 +300,15 @@
     function toggleLED(i) {
       const newState = !ledStates[i];
       set(ref(db, `/leds/led${i+1}`), newState);
+    }
+
+    function subscribeTemperature() {
+      const tempRef = ref(db, "/status/temperature");
+      const tempDisplay = document.getElementById("temperature");
+      onValue(tempRef, (snapshot) => {
+        const temp = snapshot.val();
+        tempDisplay.innerText = `Temperature: ${temp} °C`;
+      });
     }
   </script>
 </body>
