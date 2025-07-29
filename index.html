@@ -211,6 +211,7 @@
         btn.className = "led-btn";
         btn.id = led${i+1}-btn;
         btn.innerText = "Loading...";
+        btn.disabled = i !== 0;
         btn.onclick = () => toggleLED(i);
         grid.appendChild(btn);
 
@@ -218,7 +219,6 @@
         onValue(ledRef, (snapshot) => {
           ledStates[i] = snapshot.val();
           btn.innerText = ledStates[i] ? Turn OFF LED ${i+1} : Turn ON LED ${i+1};
-          btn.style.backgroundColor = ledStates[i] ? "#90e0ef" : "#e3f2fd";
         });
       }
     }
