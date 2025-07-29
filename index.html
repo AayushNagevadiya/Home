@@ -276,22 +276,22 @@
       for (let i = 0; i < 8; i++) {
         const btn = document.createElement("button");
         btn.className = "led-btn";
-        btn.id = led${i+1}-btn;
-        btn.innerText = Loading...;
+        btn.id = `led${i+1}-btn`;
+        btn.innerText = `Loading...`;
         btn.onclick = () => toggleLED(i);
         grid.appendChild(btn);
 
-        const ledRef = ref(db, /leds/led${i+1});
+        const ledRef = ref(db, `/leds/led${i+1}`);
         onValue(ledRef, (snapshot) => {
           ledStates[i] = snapshot.val();
-          btn.innerText = ledStates[i] ? Turn OFF LED ${i+1} : Turn ON LED ${i+1};
+          btn.innerText = ledStates[i] ? `Turn OFF LED ${i+1}` : `Turn ON LED ${i+1}`;
         });
       }
     }
 
     function toggleLED(i) {
       const newState = !ledStates[i];
-      set(ref(db, /leds/led${i+1}), newState);
+      set(ref(db, `/leds/led${i+1}`), newState);
     }
   </script>
 </body>
