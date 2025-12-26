@@ -1,315 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Connect</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    body, html {
-      height: 100%;
-    }
-    body {
-      background: linear-gradient(to bottom, #b3e5fc, #e1f5fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #004d40;
-    }
-    .container {
-      text-align: center;
-    }
-    .icon {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 40px;
-      font-weight: bold;
-      color: #01579b;
-    }
-    p {
-      margin-top: 10px;
-      font-size: 18px;
-      color: #0277bd;
-    }
-    button {
-      margin-top: 30px;
-      padding: 16px 30px;
-      font-size: 20px;
-      font-weight: bold;
-      color: white;
-      background: #4fc3f7;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #039be5;
-    }
-    .hidden {
-      display: none;
-    }
-    .form-container {
-      width: 95%;
-      max-width: 550px;
-      background: white;
-      border-radius: 25px;
-      padding: 50px 30px;
-      text-align: center;
-      color: #004d40;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      position: relative;
-    }
-    input {
-      width: 100%;
-      padding: 14px;
-      margin: 15px 0 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 18px;
-    }
-    .password-container {
-      position: relative;
-    }
-    .password-container svg {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      color: #004d40;
-    }
-    .status {
-      font-weight: bold;
-      margin: 20px 0;
-      color: #00695c;
-    }
-    .room-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin: 40px 0;
-    }
-    .room-card, .led-btn {
-      background: #e3f2fd;
-      color: #01579b;
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-      font-size: 18px;
-      border: none;
-    }
-    .room-card img {
-      width: 40px;
-      margin-bottom: 10px;
-    }
-    .room-card:hover, .led-btn:hover {
-      transform: translateY(-6px);
-    }
-    .room-card.disabled, .led-btn:disabled {
-      background: #eeeeee;
-      color: #777;
-      cursor: not-allowed;
-    }
-    .led-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      margin-top: 40px;
-    }
-    .back-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #004d40;
-      cursor: pointer;
-    }
-    .temperature {
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 20px;
-      color: #00796b;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Home</title>
+
+<style>
+/* ========== LIGHT THEME ========== */
+:root{
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --panel:#e0f2fe;
+  --text:#0f172a;
+  --btn:#93c5fd;
+  --btnText:#020617;
+  --top1:#60a5fa;
+  --top2:#38bdf8;
+  --success:#22c55e;
+  --danger:#ef4444;
+}
+
+/* ========== DARK THEME (3 LEVELS) ========== */
+.dark{
+  --bg:#020617;
+  --card:#0f172a;
+  --panel:#1e293b;
+  --text:#e5e7eb;
+  --btn:#334155;
+  --btnText:#e5e7eb;
+  --top1:#1e293b;
+  --top2:#020617;
+}
+
+*{box-sizing:border-box;font-family:system-ui}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  transition:.3s;
+  overflow-x:hidden;
+}
+
+/* LOGIN */
+.login{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#60a5fa,#38bdf8)
+}
+.login-box{
+  background:var(--card);
+  padding:40px;
+  border-radius:20px;
+  width:90%;
+  max-width:380px;
+}
+.login-box input{
+  width:100%;padding:14px;margin:10px 0;
+  border-radius:10px;border:1px solid #cbd5f5;
+}
+.login-box button{
+  width:100%;padding:14px;border:none;
+  border-radius:12px;background:#60a5fa;color:white;font-size:18px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:0;left:0;height:100%;width:240px;
+  background:var(--panel);
+  padding:20px;transform:translateX(-100%);
+  transition:.3s;z-index:20;
+}
+.sidebar.show{transform:translateX(0)}
+.sidebar button{
+  width:100%;padding:12px;margin:8px 0;
+  border:none;border-radius:12px;
+  background:var(--btn);
+  color:var(--btnText);
+  font-size:16px;
+}
+
+/* DARK TOGGLE */
+.toggle{
+  margin-top:20px;
+  padding:12px;
+  border-radius:12px;
+  background:var(--btn);
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+/* OVERLAY */
+#overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.4);
+  opacity:0;pointer-events:none;
+  transition:.3s;z-index:15;
+}
+#overlay.show{opacity:1;pointer-events:auto}
+
+/* APP */
+.hidden{display:none}
+.app{min-height:100vh}
+
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;
+  background:linear-gradient(135deg,var(--top1),var(--top2));
+  color:white;
+}
+.menu,.back{font-size:26px;cursor:pointer}
+.topbar h3{flex:1;text-align:center;margin:0}
+
+/* PAGES */
+.page{
+  position:absolute;top:56px;left:0;width:100%;
+  min-height:calc(100vh - 56px);
+  padding:20px;
+  transform:translateX(100%);
+  transition:.35s;
+}
+.page.active{transform:translateX(0)}
+.page.left{transform:translateX(-100%)}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  padding:22px;border-radius:20px;
+  margin-bottom:20px;
+}
+
+/* HOME SPECIAL CARDS */
+.hello-card{
+  background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
+}
+.dark .hello-card{
+  background:#0f172a;
+}
+
+.esp-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:linear-gradient(135deg,#ecfeff,#e0f2fe);
+}
+.dark .esp-card{
+  background:#1e293b;
+}
+.esp-icon{
+  font-size:28px;
+}
+.online{color:var(--success)}
+.offline{color:var(--danger)}
+
+/* LED */
+.led-vertical{display:flex;flex-direction:column;gap:14px}
+.led-btn{
+  padding:18px;border:none;border-radius:18px;
+  font-size:17px;font-weight:700;
+  background:var(--btn);
+  color:var(--btnText);
+}
+</style>
 </head>
+
 <body>
-  <div class="container" id="start-screen">
-    <img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" class="icon" alt="Profile Icon">
-    <h1>Smart Connect</h1>
-    <p>Control your home easier</p>
-    <button onclick="showLogin()">Start</button>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="login-box">
+    <h2>Smart Home</h2>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <h2>🏠 Smart Home</h2>
+  <button onclick="navigate('home')">Home</button>
+  <button onclick="navigate('room1')">Room 1</button>
+  <button onclick="logout()">Logout</button>
+
+  <div class="toggle">
+    <span>🌙 Dark Mode</span>
+    <input type="checkbox" id="darkToggle">
+  </div>
+</div>
+<div id="overlay"></div>
+
+<!-- APP -->
+<div class="app hidden" id="app">
+  <div class="topbar">
+    <span class="menu" id="menuBtn" onclick="toggleSidebar()">☰</span>
+    <span class="back hidden" id="backBtn" onclick="goBack()">←</span>
+    <h3 id="title">Home</h3>
   </div>
 
-  <div class="form-container hidden" id="login-screen">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <div class="password-container">
-      <input type="password" id="password" placeholder="Password" />
-      <svg onclick="togglePassword()" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.478 0-8.268-2.943-9.542-7z" />
-      </svg>
+  <!-- HOME -->
+  <div class="page" id="home">
+    <div class="card hello-card">
+      <h2>Hello, Aayush 👋</h2>
+      <p>Welcome to your Smart Home</p>
     </div>
-    <button onclick="login()">Login</button>
-  </div>
 
-  <div class="form-container hidden" id="dashboard">
-    <button class="back-btn" onclick="location.reload()">←</button>
-    <h2>Home Appliance</h2>
-    <button onclick="checkESP()">Check ESP32</button>
-    <div class="status" id="esp-status">ESP32 status: Unknown</div>
-    <div class="room-grid">
-      <div class="room-card disabled" id="room1" onclick="showRoom1()">
-        <img src="https://cdn-icons-png.flaticon.com/512/3105/3105821.png" />Room 1
-      </div>
-      <div class="room-card disabled">
-        <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" />Room 2
-      </div>
-      <div class="room-card disabled">
-        <img src="https://cdn-icons-png.flaticon.com/512/1046/1046871.png" />Room 3
-      </div>
-      <div class="room-card disabled">
-        <img src="https://cdn-icons-png.flaticon.com/512/1046/1046843.png" />Room 4
-      </div>
+    <div class="card esp-card">
+      <div class="esp-icon">📡</div>
+      <div id="espStatus">ESP32 OFFLINE</div>
     </div>
   </div>
 
-  <div class="form-container hidden" id="room1-screen">
-    <button class="back-btn" onclick="backToDashboard()">←</button>
-    <h2>Room 1 - LED Control</h2>
-    <div class="temperature" id="temperature">Temperature: -- °C</div>
-    <div class="led-grid" id="led-grid"></div>
+  <!-- ROOM 1 -->
+  <div class="page" id="room1">
+    <div class="card" id="temp">Temperature: -- °C</div>
+    <div class="card">
+      <div class="led-vertical" id="ledGrid"></div>
+    </div>
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-      authDomain: "home-automation-89830.firebaseapp.com",
-      databaseURL: "https://home-automation-89830-default-rtdb.firebaseio.com",
-      projectId: "home-automation-89830",
-      storageBucket: "home-automation-89830.appspot.com",
-      messagingSenderId: "483221866351",
-      appId: "1:483221866351:web:113574005f4a0c7476ae7a"
-    };
+/* DOM */
+const espStatus=document.getElementById("espStatus");
+const darkToggle=document.getElementById("darkToggle");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+/* DARK MODE */
+if(localStorage.theme==="dark"){
+  document.body.classList.add("dark");
+  darkToggle.checked=true;
+}
+darkToggle.onchange=()=>{
+  document.body.classList.toggle("dark");
+  localStorage.theme=document.body.classList.contains("dark")?"dark":"light";
+};
 
-    const ledStates = Array(8).fill(false);
+/* FIREBASE */
+const appFb=initializeApp({
+  apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+  databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
+});
+const db=getDatabase(appFb);
 
-    window.showLogin = () => {
-      document.getElementById("start-screen").classList.add("hidden");
-      document.getElementById("login-screen").classList.remove("hidden");
-    };
+/* LOGIN */
+loginBtn.onclick=()=>{
+  if(user.value==="aayush" && pass.value==="Aayush@1982"){
+    login.classList.add("hidden");
+    app.classList.remove("hidden");
+    navigate("home");
+    startESPCheck();
+  }else alert("Invalid login");
+};
+window.logout=()=>location.reload();
 
-    window.togglePassword = () => {
-      const passwordField = document.getElementById("password");
-      passwordField.type = passwordField.type === "password" ? "text" : "password";
-    };
+/* SIDEBAR */
+window.toggleSidebar=()=>{
+  sidebar.classList.toggle("show");
+  overlay.classList.toggle("show");
+};
+overlay.onclick=()=>toggleSidebar();
 
-    window.login = () => {
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      if (user === "aayush" && pass === "Aayush@1982") {
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("dashboard").classList.remove("hidden");
-        setInterval(checkESPStatusNow, 5000);
-      } else {
-        alert("Invalid login");
-      }
-    };
+/* NAVIGATION */
+let history=["home"],current="home";
+window.navigate=p=>{
+  if(p==="home"){
+    document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active","left"));
+    home.classList.add("active");
+    history=["home"];current="home";
+  }else{
+    document.getElementById(current).classList.add("left");
+    document.getElementById(p).classList.add("active");
+    history.push(p);current=p;
+  }
+  sidebar.classList.remove("show");
+  overlay.classList.remove("show");
+  updateUI();
+};
+window.goBack=()=>{
+  if(history.length<=1)return;
+  const cur=history.pop();
+  const prev=history.at(-1);
+  document.getElementById(cur).classList.remove("active");
+  document.getElementById(prev).classList.remove("left");
+  current=prev;
+  updateUI();
+};
+function updateUI(){
+  title.innerText=current==="home"?"Home":"Room 1";
+  backBtn.classList.toggle("hidden",current==="home");
+  menuBtn.classList.toggle("hidden",current!=="home");
+}
 
-    function updateESPStatus(isOnline) {
-      const statusText = document.getElementById("esp-status");
-      const room1 = document.getElementById("room1");
-      if (isOnline) {
-        statusText.innerText = "ESP32 is ONLINE ✅";
-        statusText.style.color = "#2e7d32";
-        room1.classList.remove("disabled");
-      } else {
-        statusText.innerText = "ESP32 is OFFLINE ❌";
-        statusText.style.color = "#c62828";
-        room1.classList.add("disabled");
-      }
-    }
+/* ESP32 STATUS (NO "CHECKING") */
+function startESPCheck(){
+  setInterval(()=>{
+    get(ref(db,"/status/lastSeen")).then(s=>{
+      if(!s.exists()) return;
+      const online = Date.now() - s.val() < 10000;
+      espStatus.innerHTML = online
+        ? `<span class="online">● ESP32 ONLINE</span>`
+        : `<span class="offline">● ESP32 OFFLINE</span>`;
+    });
+  },5000);
+}
 
-    function checkESPStatusNow() {
-      const statusRef = ref(db, "/status/lastSeen");
-      get(statusRef).then((snapshot) => {
-        if (snapshot.exists()) {
-          const lastSeen = snapshot.val();
-          const now = Date.now();
-          const diff = now - lastSeen;
-          updateESPStatus(diff < 10000);
-        }
-      });
-    }
+/* TEMP */
+onValue(ref(db,"/status/temperature"),s=>{
+  if(s.exists()) temp.textContent=`Temperature: ${s.val()} °C`;
+});
 
-    window.checkESP = checkESPStatusNow;
+/* LEDS 1–4 */
+const states=[false,false,false,false];
+for(let i=1;i<=4;i++){
+  const b=document.createElement("button");
+  b.className="led-btn";
+  b.onclick=()=>set(ref(db,`/leds/led${i}`),!states[i-1]);
+  ledGrid.appendChild(b);
+  onValue(ref(db,`/leds/led${i}`),s=>{
+    states[i-1]=s.val();
+    b.innerText=states[i-1]?`Turn OFF LED ${i}`:`Turn ON LED ${i}`;
+  });
+}
+</script>
 
-    window.showRoom1 = () => {
-      if (document.getElementById("room1").classList.contains("disabled")) return;
-      document.getElementById("dashboard").classList.add("hidden");
-      document.getElementById("room1-screen").classList.remove("hidden");
-      renderLEDButtons();
-      subscribeTemperature();
-    };
-
-    window.backToDashboard = () => {
-      document.getElementById("room1-screen").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
-    };
-
-    function renderLEDButtons() {
-      const grid = document.getElementById("led-grid");
-      grid.innerHTML = "";
-      for (let i = 0; i < 8; i++) {
-        const btn = document.createElement("button");
-        btn.className = "led-btn";
-        btn.id = `led${i+1}-btn`;
-        btn.innerText = `Loading...`;
-        btn.onclick = () => toggleLED(i);
-        grid.appendChild(btn);
-
-        const ledRef = ref(db, `/leds/led${i+1}`);
-        onValue(ledRef, (snapshot) => {
-          ledStates[i] = snapshot.val();
-          btn.innerText = ledStates[i] ? `Turn OFF LED ${i+1}` : `Turn ON LED ${i+1}`;
-        });
-      }
-    }
-
-    function toggleLED(i) {
-      const newState = !ledStates[i];
-      set(ref(db, `/leds/led${i+1}`), newState);
-    }
-
-    function subscribeTemperature() {
-      const tempRef = ref(db, "/status/temperature");
-      const tempDisplay = document.getElementById("temperature");
-      onValue(tempRef, (snapshot) => {
-        const temp = snapshot.val();
-        tempDisplay.innerText = `Temperature: ${temp} °C`;
-      });
-    }
-  </script>
 </body>
 </html>
