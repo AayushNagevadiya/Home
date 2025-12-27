@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Home</title>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-/* ========== LIGHT THEME ========== */
 :root{
   --bg:#f8fafc;
   --card:#ffffff;
@@ -19,8 +20,6 @@
   --success:#22c55e;
   --danger:#ef4444;
 }
-
-/* ========== DARK THEME (3 LEVELS) ========== */
 .dark{
   --bg:#020617;
   --card:#0f172a;
@@ -31,7 +30,6 @@
   --top1:#1e293b;
   --top2:#020617;
 }
-
 *{box-sizing:border-box;font-family:system-ui}
 body{
   margin:0;
@@ -99,7 +97,6 @@ body{
 }
 #overlay.show{opacity:1;pointer-events:auto}
 
-/* APP */
 .hidden{display:none}
 .app{min-height:100vh}
 
@@ -110,19 +107,12 @@ body{
   background:linear-gradient(135deg,var(--top1),var(--top2));
   color:white;
 }
-.menu,.back{font-size:26px;cursor:pointer}
+.menu{font-size:26px;cursor:pointer}
 .topbar h3{flex:1;text-align:center;margin:0}
 
-/* PAGES */
-.page{
-  position:absolute;top:56px;left:0;width:100%;
-  min-height:calc(100vh - 56px);
-  padding:20px;
-  transform:translateX(100%);
-  transition:.35s;
-}
-.page.active{transform:translateX(0)}
-.page.left{transform:translateX(-100%)}
+/* PAGE */
+.page{display:none;padding:20px}
+.page.active{display:block}
 
 /* CARDS */
 .card{
@@ -131,26 +121,15 @@ body{
   margin-bottom:20px;
 }
 
-/* HOME SPECIAL CARDS */
-.hello-card{
-  background:linear-gradient(135deg,#f0f9ff,#e0f2fe);
-}
-.dark .hello-card{
-  background:#0f172a;
-}
+/* HOME */
+.hello-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
+.dark .hello-card{background:#0f172a}
 
 .esp-card{
-  display:flex;
-  align-items:center;
-  gap:14px;
+  display:flex;align-items:center;gap:14px;
   background:linear-gradient(135deg,#ecfeff,#e0f2fe);
 }
-.dark .esp-card{
-  background:#1e293b;
-}
-.esp-icon{
-  font-size:28px;
-}
+.dark .esp-card{background:#1e293b}
 .online{color:var(--success)}
 .offline{color:var(--danger)}
 
@@ -172,7 +151,15 @@ body{
   <div class="login-box">
     <h2>Smart Home</h2>
     <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
+
+    <div style="position:relative">
+      <input id="pass" type="password" placeholder="Password">
+      <i id="eye" class="fa-solid fa-eye-slash"
+         style="position:absolute;right:14px;top:50%;
+         transform:translateY(-50%);
+         cursor:pointer;color:#64748b"></i>
+    </div>
+
     <button id="loginBtn">Login</button>
   </div>
 </div>
@@ -194,25 +181,21 @@ body{
 <!-- APP -->
 <div class="app hidden" id="app">
   <div class="topbar">
-    <span class="menu" id="menuBtn" onclick="toggleSidebar()">☰</span>
-    <span class="back hidden" id="backBtn" onclick="goBack()">←</span>
+    <span class="menu" onclick="toggleSidebar()">☰</span>
     <h3 id="title">Home</h3>
   </div>
 
-  <!-- HOME -->
-  <div class="page" id="home">
+  <div class="page active" id="home">
     <div class="card hello-card">
       <h2>Hello, Aayush 👋</h2>
       <p>Welcome to your Smart Home</p>
     </div>
 
     <div class="card esp-card">
-      <div class="esp-icon">📡</div>
-      <div id="espStatus">ESP32 OFFLINE</div>
+      <div id="espStatus">Checking connection…</div>
     </div>
   </div>
 
-  <!-- ROOM 1 -->
   <div class="page" id="room1">
     <div class="card" id="temp">Temperature: -- °C</div>
     <div class="card">
@@ -226,7 +209,18 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebas
 import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 /* DOM */
+const login=document.getElementById("login");
+const app=document.getElementById("app");
+const loginBtn=document.getElementById("loginBtn");
+const user=document.getElementById("user");
+const pass=document.getElementById("pass");
+const eye=document.getElementById("eye");
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("overlay");
+const title=document.getElementById("title");
 const espStatus=document.getElementById("espStatus");
+const temp=document.getElementById("temp");
+const ledGrid=document.getElementById("ledGrid");
 const darkToggle=document.getElementById("darkToggle");
 
 /* DARK MODE */
@@ -264,48 +258,53 @@ window.toggleSidebar=()=>{
 };
 overlay.onclick=()=>toggleSidebar();
 
-/* NAVIGATION */
-let history=["home"],current="home";
+/* NAVIGATION + HISTORY */
+let currentPage="home";
+history.replaceState({page:"home"},"");
+
 window.navigate=p=>{
-  if(p==="home"){
-    document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active","left"));
-    home.classList.add("active");
-    history=["home"];current="home";
-  }else{
-    document.getElementById(current).classList.add("left");
-    document.getElementById(p).classList.add("active");
-    history.push(p);current=p;
-  }
+  document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
+  document.getElementById(p).classList.add("active");
+  title.innerText=p==="home"?"Home":"Room 1";
   sidebar.classList.remove("show");
   overlay.classList.remove("show");
-  updateUI();
+  currentPage=p;
+  history.pushState({page:p},"");
 };
-window.goBack=()=>{
-  if(history.length<=1)return;
-  const cur=history.pop();
-  const prev=history.at(-1);
-  document.getElementById(cur).classList.remove("active");
-  document.getElementById(prev).classList.remove("left");
-  current=prev;
-  updateUI();
-};
-function updateUI(){
-  title.innerText=current==="home"?"Home":"Room 1";
-  backBtn.classList.toggle("hidden",current==="home");
-  menuBtn.classList.toggle("hidden",current!=="home");
-}
 
-/* ESP32 STATUS (NO "CHECKING") */
+/* SWIPE / BACK */
+window.addEventListener("popstate",()=>{
+  if(currentPage!=="home"){
+    navigate("home");
+  }else{
+    if(confirm("Exit the app?")){
+      window.close();
+    }else{
+      history.pushState({page:"home"},"");
+    }
+  }
+});
+
+/* ESP32 STATUS – FIXED */
 function startESPCheck(){
-  setInterval(()=>{
-    get(ref(db,"/status/lastSeen")).then(s=>{
-      if(!s.exists()) return;
-      const online = Date.now() - s.val() < 10000;
-      espStatus.innerHTML = online
+  checkESP();
+  setInterval(checkESP,5000);
+}
+function checkESP(){
+  get(ref(db,"/status/lastSeen"))
+    .then(s=>{
+      if(!s.exists()){
+        espStatus.innerHTML=`<span class="offline">● ESP32 OFFLINE</span>`;
+        return;
+      }
+      const online=Date.now()-Number(s.val())<10000;
+      espStatus.innerHTML=online
         ? `<span class="online">● ESP32 ONLINE</span>`
         : `<span class="offline">● ESP32 OFFLINE</span>`;
+    })
+    .catch(()=>{
+      espStatus.innerHTML=`<span class="offline">● ESP32 OFFLINE</span>`;
     });
-  },5000);
 }
 
 /* TEMP */
@@ -313,7 +312,7 @@ onValue(ref(db,"/status/temperature"),s=>{
   if(s.exists()) temp.textContent=`Temperature: ${s.val()} °C`;
 });
 
-/* LEDS 1–4 */
+/* LEDS */
 const states=[false,false,false,false];
 for(let i=1;i<=4;i++){
   const b=document.createElement("button");
@@ -322,9 +321,19 @@ for(let i=1;i<=4;i++){
   ledGrid.appendChild(b);
   onValue(ref(db,`/leds/led${i}`),s=>{
     states[i-1]=s.val();
-    b.innerText=states[i-1]?`Turn OFF LED ${i}`:`Turn ON LED ${i}`;
+    b.innerText=states[i-1]
+      ? `Turn OFF LED ${i}`
+      : `Turn ON LED ${i}`;
   });
 }
+
+/* PASSWORD EYE */
+eye.onclick=()=>{
+  pass.type=pass.type==="password"?"text":"password";
+  eye.className=pass.type==="password"
+    ?"fa-solid fa-eye-slash"
+    :"fa-solid fa-eye";
+};
 </script>
 
 </body>
