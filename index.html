@@ -31,81 +31,57 @@
   --top2:#020617;
 }
 *{box-sizing:border-box;font-family:system-ui}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  transition:.3s;
-  overflow-x:hidden;
-}
+body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
 
 /* LOGIN */
 .login{
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  height:100vh;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#60a5fa,#38bdf8)
 }
 .login-box{
-  background:var(--card);
-  padding:40px;
-  border-radius:20px;
-  width:90%;
-  max-width:380px;
+  background:var(--card);padding:40px;border-radius:20px;
+  width:90%;max-width:380px;text-align:center
 }
 .login-box input{
   width:100%;padding:14px;margin:10px 0;
-  border-radius:10px;border:1px solid #cbd5f5;
+  border-radius:10px;border:1px solid #cbd5f5
 }
 .login-box button{
   width:100%;padding:14px;border:none;
-  border-radius:12px;background:#60a5fa;color:white;font-size:18px;
+  border-radius:12px;background:#60a5fa;color:white;font-size:18px
 }
 
 /* SIDEBAR */
 .sidebar{
   position:fixed;top:0;left:0;height:100%;width:240px;
-  background:var(--panel);
-  padding:20px;transform:translateX(-100%);
-  transition:.3s;z-index:20;
+  background:var(--panel);padding:20px;
+  transform:translateX(-100%);transition:.3s;z-index:20
 }
 .sidebar.show{transform:translateX(0)}
 .sidebar button{
-  width:100%;padding:12px;margin:8px 0;
-  border:none;border-radius:12px;
-  background:var(--btn);
-  color:var(--btnText);
-  font-size:16px;
+  width:100%;padding:12px;margin:8px 0;border:none;
+  border-radius:12px;background:var(--btn);
+  color:var(--btnText);font-size:16px
 }
-
-/* DARK TOGGLE */
 .toggle{
-  margin-top:20px;
-  padding:12px;
-  border-radius:12px;
-  background:var(--btn);
-  display:flex;justify-content:space-between;align-items:center;
+  margin-top:20px;padding:12px;border-radius:12px;
+  background:var(--btn);display:flex;justify-content:space-between
 }
 
-/* OVERLAY */
 #overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.4);
-  opacity:0;pointer-events:none;
-  transition:.3s;z-index:15;
+  position:fixed;inset:0;background:rgba(0,0,0,.4);
+  opacity:0;pointer-events:none;transition:.3s;z-index:15
 }
 #overlay.show{opacity:1;pointer-events:auto}
 
 .hidden{display:none}
-.app{min-height:100vh}
 
 /* TOPBAR */
 .topbar{
   display:flex;align-items:center;gap:10px;
   padding:14px 16px;
   background:linear-gradient(135deg,var(--top1),var(--top2));
-  color:white;
+  color:white
 }
 .menu{font-size:26px;cursor:pointer}
 .topbar h3{flex:1;text-align:center;margin:0}
@@ -116,30 +92,24 @@ body{
 
 /* CARDS */
 .card{
-  background:var(--card);
-  padding:22px;border-radius:20px;
-  margin-bottom:20px;
+  background:var(--card);padding:22px;
+  border-radius:20px;margin-bottom:20px
 }
-
-/* HOME */
 .hello-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
 .dark .hello-card{background:#0f172a}
-
 .esp-card{
   display:flex;align-items:center;gap:14px;
-  background:linear-gradient(135deg,#ecfeff,#e0f2fe);
+  background:linear-gradient(135deg,#ecfeff,#e0f2fe)
 }
 .dark .esp-card{background:#1e293b}
 .online{color:var(--success)}
 .offline{color:var(--danger)}
 
-/* LED */
 .led-vertical{display:flex;flex-direction:column;gap:14px}
 .led-btn{
   padding:18px;border:none;border-radius:18px;
   font-size:17px;font-weight:700;
-  background:var(--btn);
-  color:var(--btnText);
+  background:var(--btn);color:var(--btnText)
 }
 </style>
 </head>
@@ -150,49 +120,39 @@ body{
 <div class="login" id="login">
   <div class="login-box">
     <h2>Smart Home</h2>
-    <input id="user" placeholder="Username">
-
-    <div style="position:relative">
-      <input id="pass" type="password" placeholder="Password">
-      <i id="eye" class="fa-solid fa-eye-slash"
-         style="position:absolute;right:14px;top:50%;
-         transform:translateY(-50%);
-         cursor:pointer;color:#64748b"></i>
-    </div>
-
-    <button id="loginBtn">Login</button>
+    <input id="name" placeholder="Your Name">
+    <input id="phone" placeholder="10 Digit Phone" maxlength="10">
+    <button id="loginBtn">Request Access</button>
+    <p id="msg"></p>
   </div>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <h2>🏠 Smart Home</h2>
   <button onclick="navigate('home')">Home</button>
   <button onclick="navigate('room1')">Room 1</button>
   <button onclick="logout()">Logout</button>
-
   <div class="toggle">
-    <span>🌙 Dark Mode</span>
+    <span>🌙 Dark</span>
     <input type="checkbox" id="darkToggle">
   </div>
 </div>
 <div id="overlay"></div>
 
 <!-- APP -->
-<div class="app hidden" id="app">
+<div class="hidden" id="app">
   <div class="topbar">
     <span class="menu" onclick="toggleSidebar()">☰</span>
-    <h3 id="title">Home</h3>
+    <h3>Home</h3>
   </div>
 
   <div class="page active" id="home">
     <div class="card hello-card">
-      <h2>Hello, Aayush 👋</h2>
-      <p>Welcome to your Smart Home</p>
+      <h2 id="hello"></h2>
+      <p>Welcome to Smart Home</p>
     </div>
-
     <div class="card esp-card">
-      <div id="espStatus">Checking connection…</div>
+      <div id="espStatus">Checking ESP32…</div>
     </div>
   </div>
 
@@ -212,16 +172,23 @@ import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/fir
 const login=document.getElementById("login");
 const app=document.getElementById("app");
 const loginBtn=document.getElementById("loginBtn");
-const user=document.getElementById("user");
-const pass=document.getElementById("pass");
-const eye=document.getElementById("eye");
+const nameI=document.getElementById("name");
+const phoneI=document.getElementById("phone");
+const msg=document.getElementById("msg");
+const hello=document.getElementById("hello");
 const sidebar=document.getElementById("sidebar");
 const overlay=document.getElementById("overlay");
-const title=document.getElementById("title");
 const espStatus=document.getElementById("espStatus");
 const temp=document.getElementById("temp");
 const ledGrid=document.getElementById("ledGrid");
 const darkToggle=document.getElementById("darkToggle");
+
+/* FIREBASE */
+const fb=initializeApp({
+  apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+  databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
+});
+const db=getDatabase(fb);
 
 /* DARK MODE */
 if(localStorage.theme==="dark"){
@@ -233,23 +200,35 @@ darkToggle.onchange=()=>{
   localStorage.theme=document.body.classList.contains("dark")?"dark":"light";
 };
 
-/* FIREBASE */
-const appFb=initializeApp({
-  apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-  databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
-});
-const db=getDatabase(appFb);
-
-/* LOGIN */
+/* REQUEST ACCESS */
 loginBtn.onclick=()=>{
-  if(user.value==="aayush" && pass.value==="Aayush@1982"){
-    login.classList.add("hidden");
-    app.classList.remove("hidden");
-    navigate("home");
-    startESPCheck();
-  }else alert("Invalid login");
+  const name=nameI.value.trim();
+  const phone=phoneI.value.trim();
+  if(name===""||phone.length!==10){
+    msg.innerText="Invalid details";
+    return;
+  }
+
+  set(ref(db,"requests/pending/"+phone),{
+    name,phone,time:new Date().toLocaleString()
+  });
+
+  localStorage.setItem("phone",phone);
+  msg.innerText="Waiting for approval…";
+
+  onValue(ref(db,"requests/approved/"+phone),s=>{
+    if(s.exists()){
+      openApp(s.val().name);
+    }
+  });
 };
-window.logout=()=>location.reload();
+
+function openApp(name){
+  login.classList.add("hidden");
+  app.classList.remove("hidden");
+  hello.innerText="Hello, "+name+" 👋";
+  startESP();
+}
 
 /* SIDEBAR */
 window.toggleSidebar=()=>{
@@ -258,82 +237,47 @@ window.toggleSidebar=()=>{
 };
 overlay.onclick=()=>toggleSidebar();
 
-/* NAVIGATION + HISTORY */
-let currentPage="home";
-history.replaceState({page:"home"},"");
-
 window.navigate=p=>{
   document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
   document.getElementById(p).classList.add("active");
-  title.innerText=p==="home"?"Home":"Room 1";
   sidebar.classList.remove("show");
   overlay.classList.remove("show");
-  currentPage=p;
-  history.pushState({page:p},"");
 };
 
-/* SWIPE / BACK */
-window.addEventListener("popstate",()=>{
-  if(currentPage!=="home"){
-    navigate("home");
-  }else{
-    if(confirm("Exit the app?")){
-      window.close();
-    }else{
-      history.pushState({page:"home"},"");
-    }
-  }
-});
+window.logout=()=>{
+  localStorage.clear();
+  location.reload();
+};
 
-/* ESP32 STATUS – FIXED */
-function startESPCheck(){
-  checkESP();
-  setInterval(checkESP,5000);
-}
-function checkESP(){
-  get(ref(db,"/status/lastSeen"))
-    .then(s=>{
-      if(!s.exists()){
-        espStatus.innerHTML=`<span class="offline">● ESP32 OFFLINE</span>`;
-        return;
-      }
-      const online=Date.now()-Number(s.val())<10000;
-      espStatus.innerHTML=online
-        ? `<span class="online">● ESP32 ONLINE</span>`
-        : `<span class="offline">● ESP32 OFFLINE</span>`;
-    })
-    .catch(()=>{
-      espStatus.innerHTML=`<span class="offline">● ESP32 OFFLINE</span>`;
+/* ESP32 */
+function startESP(){
+  setInterval(()=>{
+    get(ref(db,"/status/lastSeen")).then(s=>{
+      const ok=s.exists()&&Date.now()-s.val()<10000;
+      espStatus.innerHTML=ok
+        ? "<span class='online'>● ESP32 ONLINE</span>"
+        : "<span class='offline'>● ESP32 OFFLINE</span>";
     });
+  },5000);
 }
 
 /* TEMP */
 onValue(ref(db,"/status/temperature"),s=>{
-  if(s.exists()) temp.textContent=`Temperature: ${s.val()} °C`;
+  if(s.exists()) temp.innerText="Temperature: "+s.val()+" °C";
 });
 
 /* LEDS */
-const states=[false,false,false,false];
+const states=[0,0,0,0];
 for(let i=1;i<=4;i++){
   const b=document.createElement("button");
   b.className="led-btn";
-  b.onclick=()=>set(ref(db,`/leds/led${i}`),!states[i-1]);
+  b.onclick=()=>set(ref(db,"/leds/led"+i),!states[i-1]);
   ledGrid.appendChild(b);
-  onValue(ref(db,`/leds/led${i}`),s=>{
+  onValue(ref(db,"/leds/led"+i),s=>{
     states[i-1]=s.val();
-    b.innerText=states[i-1]
-      ? `Turn OFF LED ${i}`
-      : `Turn ON LED ${i}`;
+    b.innerText=states[i-1]?"Turn OFF LED "+i:"Turn ON LED "+i;
   });
 }
-
-/* PASSWORD EYE */
-eye.onclick=()=>{
-  pass.type=pass.type==="password"?"text":"password";
-  eye.className=pass.type==="password"
-    ?"fa-solid fa-eye-slash"
-    :"fa-solid fa-eye";
-};
 </script>
 
 </body>
