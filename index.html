@@ -5,106 +5,123 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Home</title>
 
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+/* ===== APP LOCK (NO SCROLL) ===== */
+html,body{
+  height:100%;
+  margin:0;
+  overflow:hidden;        /* 🔒 NO SCROLL */
+  font-family:system-ui;
+}
+
+/* ===== THEME ===== */
 :root{
-  --bg:#f8fafc;
-  --card:#ffffff;
-  --panel:#e0f2fe;
-  --text:#0f172a;
-  --btn:#93c5fd;
-  --btnText:#020617;
-  --top1:#60a5fa;
-  --top2:#38bdf8;
-  --success:#22c55e;
-  --danger:#ef4444;
+  --bg:#f8fafc;--card:#ffffff;--panel:#e0f2fe;--text:#0f172a;
+  --btn:#93c5fd;--btnText:#020617;
+  --top1:#60a5fa;--top2:#38bdf8;
+  --success:#22c55e;--danger:#ef4444;
 }
 .dark{
-  --bg:#020617;
-  --card:#0f172a;
-  --panel:#1e293b;
-  --text:#e5e7eb;
-  --btn:#334155;
-  --btnText:#e5e7eb;
-  --top1:#1e293b;
-  --top2:#020617;
+  --bg:#020617;--card:#0f172a;--panel:#1e293b;--text:#e5e7eb;
+  --btn:#334155;--btnText:#e5e7eb;
+  --top1:#1e293b;--top2:#020617;
 }
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
+body{background:var(--bg);color:var(--text)}
+.hidden{display:none}
 
-/* LOGIN */
+/* ===== LOGIN PAGE ===== */
 .login{
-  height:100vh;display:flex;align-items:center;justify-content:center;
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
   background:linear-gradient(135deg,#60a5fa,#38bdf8)
 }
 .login-box{
-  background:var(--card);padding:40px;border-radius:20px;
-  width:90%;max-width:380px;text-align:center
+  background:var(--card);
+  padding:40px;
+  border-radius:20px;
+  width:90%;max-width:380px;
+  text-align:center
 }
 .login-box input{
   width:100%;padding:14px;margin:10px 0;
   border-radius:10px;border:1px solid #cbd5f5
 }
 .login-box button{
-  width:100%;padding:14px;border:none;
-  border-radius:12px;background:#60a5fa;color:white;font-size:18px
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:#60a5fa;color:white;font-size:18px
 }
+#msg{color:#dc2626;font-weight:600}
 
-/* SIDEBAR */
+/* ===== SIDEBAR ===== */
 .sidebar{
   position:fixed;top:0;left:0;height:100%;width:240px;
   background:var(--panel);padding:20px;
-  transform:translateX(-100%);transition:.3s;z-index:20
+  transform:translateX(-100%);
+  transition:.3s;z-index:20
 }
 .sidebar.show{transform:translateX(0)}
 .sidebar button{
-  width:100%;padding:12px;margin:8px 0;border:none;
-  border-radius:12px;background:var(--btn);
-  color:var(--btnText);font-size:16px
+  width:100%;padding:12px;margin:8px 0;
+  border:none;border-radius:12px;
+  background:var(--btn);color:var(--btnText);
+  font-size:16px;text-align:left
 }
 .toggle{
   margin-top:20px;padding:12px;border-radius:12px;
-  background:var(--btn);display:flex;justify-content:space-between
+  background:var(--btn);
+  display:flex;justify-content:space-between
 }
-
 #overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.4);
-  opacity:0;pointer-events:none;transition:.3s;z-index:15
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.4);
+  opacity:0;pointer-events:none;
+  transition:.3s;z-index:15
 }
 #overlay.show{opacity:1;pointer-events:auto}
 
-.hidden{display:none}
+/* ===== APP WRAPPER ===== */
+#app{
+  position:fixed; inset:0;
+  background:var(--bg);
+}
 
-/* TOPBAR */
+/* ===== TOPBAR ===== */
 .topbar{
+  height:56px;
   display:flex;align-items:center;gap:10px;
-  padding:14px 16px;
+  padding:0 16px;
   background:linear-gradient(135deg,var(--top1),var(--top2));
   color:white
 }
 .menu{font-size:26px;cursor:pointer}
 .topbar h3{flex:1;text-align:center;margin:0}
 
-/* PAGE */
-.page{display:none;padding:20px}
+/* ===== PAGES (REAL MULTI-PAGE) ===== */
+.page{
+  position:absolute;
+  inset:56px 0 0 0;       /* below topbar */
+  padding:20px;
+  display:none;
+  overflow-y:auto;       /* internal scroll only */
+}
 .page.active{display:block}
 
-/* CARDS */
+/* ===== CARDS ===== */
 .card{
-  background:var(--card);padding:22px;
-  border-radius:20px;margin-bottom:20px
+  background:var(--card);
+  padding:22px;border-radius:20px;
+  margin-bottom:20px
 }
-.hello-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe)}
-.dark .hello-card{background:#0f172a}
-.esp-card{
-  display:flex;align-items:center;gap:14px;
-  background:linear-gradient(135deg,#ecfeff,#e0f2fe)
-}
-.dark .esp-card{background:#1e293b}
+.master-card{text-align:center;font-weight:700;cursor:pointer}
+.master-on{background:#dcfce7;color:#166534}
+.master-off{background:#fee2e2;color:#991b1b}
 .online{color:var(--success)}
 .offline{color:var(--danger)}
-
 .led-vertical{display:flex;flex-direction:column;gap:14px}
 .led-btn{
   padding:18px;border:none;border-radius:18px;
@@ -116,22 +133,23 @@ body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
 
 <body>
 
-<!-- LOGIN -->
+<!-- ===== LOGIN PAGE ===== -->
 <div class="login" id="login">
   <div class="login-box">
     <h2>Smart Home</h2>
     <input id="name" placeholder="Your Name">
-    <input id="phone" placeholder="10 Digit Phone" maxlength="10">
-    <button id="loginBtn">Request Access</button>
+    <input id="phone" placeholder="Enter your number" maxlength="10"
+      oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+    <button id="loginBtn">Login</button>
     <p id="msg"></p>
   </div>
 </div>
 
-<!-- SIDEBAR -->
+<!-- ===== SIDEBAR ===== -->
 <div class="sidebar" id="sidebar">
-  <button onclick="navigate('home')">Home</button>
-  <button onclick="navigate('room1')">Room 1</button>
-  <button onclick="logout()">Logout</button>
+  <button onclick="navigate('home')">🏠 Home</button>
+  <button onclick="navigate('room1')">💡 Room 1</button>
+  <button onclick="logout()">🚪 Logout</button>
   <div class="toggle">
     <span>🌙 Dark</span>
     <input type="checkbox" id="darkToggle">
@@ -139,23 +157,25 @@ body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
 </div>
 <div id="overlay"></div>
 
-<!-- APP -->
-<div class="hidden" id="app">
+<!-- ===== APP ===== -->
+<div id="app" class="hidden">
   <div class="topbar">
     <span class="menu" onclick="toggleSidebar()">☰</span>
-    <h3>Home</h3>
+    <h3 id="pageTitle">Home</h3>
   </div>
 
+  <!-- HOME PAGE -->
   <div class="page active" id="home">
-    <div class="card hello-card">
+    <div class="card">
       <h2 id="hello"></h2>
-      <p>Welcome to Smart Home</p>
-    </div>
-    <div class="card esp-card">
       <div id="espStatus">Checking ESP32…</div>
     </div>
+    <div class="card master-card master-off" id="masterCard">
+      🔒 MASTER CONTROL : OFF
+    </div>
   </div>
 
+  <!-- ROOM 1 PAGE -->
   <div class="page" id="room1">
     <div class="card" id="temp">Temperature: -- °C</div>
     <div class="card">
@@ -166,9 +186,17 @@ body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue, update }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-/* DOM */
+/* ===== FIREBASE ===== */
+const fb=initializeApp({
+  apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
+  databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
+});
+const db=getDatabase(fb);
+
+/* ===== DOM ===== */
 const login=document.getElementById("login");
 const app=document.getElementById("app");
 const loginBtn=document.getElementById("loginBtn");
@@ -178,19 +206,142 @@ const msg=document.getElementById("msg");
 const hello=document.getElementById("hello");
 const sidebar=document.getElementById("sidebar");
 const overlay=document.getElementById("overlay");
+const pageTitle=document.getElementById("pageTitle");
 const espStatus=document.getElementById("espStatus");
 const temp=document.getElementById("temp");
 const ledGrid=document.getElementById("ledGrid");
+const masterCard=document.getElementById("masterCard");
 const darkToggle=document.getElementById("darkToggle");
 
-/* FIREBASE */
-const fb=initializeApp({
-  apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
-  databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
-});
-const db=getDatabase(fb);
+let masterEnabled=true;
 
-/* DARK MODE */
+/* ===== LOGIN ===== */
+loginBtn.onclick=()=>{
+  const name=nameI.value.trim();
+  const phone=phoneI.value.trim();
+  msg.innerText="";
+
+  if(name===""||phone.length!==10){
+    msg.innerText="Invalid details"; return;
+  }
+
+  const vRef=ref(db,"visitors/"+phone);
+  get(vRef).then(s=>{
+    if(s.exists()){
+      const d=s.val();
+      if(d.blocked){ msg.innerText="Admin blocked you"; return; }
+      if(d.name!==name){ msg.innerText="Wrong name for this number"; return; }
+      update(vRef,{visits:(d.visits||1)+1,lastVisit:Date.now()});
+    }else{
+      set(vRef,{name,phone,visits:1,lastVisit:Date.now(),blocked:false});
+    }
+    openApp(name,phone);
+  });
+};
+
+function openApp(name,phone){
+  login.classList.add("hidden");
+  app.classList.remove("hidden");
+  hello.innerText="Hello, "+name+" 👋";
+  navigate("home");
+  listenBlock(phone);
+  startESP();
+}
+
+/* ===== REALTIME BLOCK ===== */
+function listenBlock(phone){
+  onValue(ref(db,"visitors/"+phone+"/blocked"),s=>{
+    if(s.val()===true){
+      alert("Admin blocked you");
+      location.reload();
+    }
+  });
+}
+
+/* ===== SIDEBAR ===== */
+window.toggleSidebar=()=>{
+  sidebar.classList.toggle("show");
+  overlay.classList.toggle("show");
+};
+overlay.onclick=()=>{sidebar.classList.remove("show");overlay.classList.remove("show");};
+
+/* ===== NAVIGATION ===== */
+window.navigate=p=>{
+  document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
+  document.getElementById(p).classList.add("active");
+  pageTitle.innerText=p==="home"?"Home":"Room 1";
+  sidebar.classList.remove("show");
+  overlay.classList.remove("show");
+};
+
+window.logout=()=>location.reload();
+
+/* ===== BACK + SWIPE ===== */
+history.pushState({page:"home"},"","");
+window.onpopstate=()=>{
+  navigate("home");
+  history.pushState({page:"home"},"","");
+};
+
+let sx=0,sy=0,ex=0,ey=0;
+document.addEventListener("touchstart",e=>{
+  sx=e.touches[0].clientX;
+  sy=e.touches[0].clientY;
+},{passive:true});
+document.addEventListener("touchmove",e=>{
+  if(Math.abs(e.touches[0].clientX-sx)>30) e.preventDefault();
+},{passive:false});
+document.addEventListener("touchend",e=>{
+  ex=e.changedTouches[0].clientX;
+  ey=e.changedTouches[0].clientY;
+  const dx=ex-sx, dy=Math.abs(ey-sy);
+  if(dy>60) return;
+  if(dx>80 && document.querySelector(".page.active")?.id==="room1") navigate("home");
+  if(dx<-80 && document.querySelector(".page.active")?.id==="home") navigate("room1");
+});
+
+/* ===== ESP ===== */
+function startESP(){
+  setInterval(()=>{
+    get(ref(db,"status/lastSeen")).then(s=>{
+      espStatus.innerHTML=
+        s.exists()&&Date.now()-s.val()<10000
+        ?"<span class='online'>● ESP32 ONLINE</span>"
+        :"<span class='offline'>● ESP32 OFFLINE</span>";
+    });
+  },500);
+}
+
+/* ===== TEMP ===== */
+onValue(ref(db,"status/temperature"),s=>{
+  if(s.exists()) temp.innerText="Temperature: "+s.val()+" °C";
+});
+
+/* ===== MASTER ===== */
+onValue(ref(db,"status/masterControl"),s=>{
+  masterEnabled=!!s.val();
+  masterCard.className="card master-card "+(masterEnabled?"master-on":"master-off");
+  masterCard.innerText=masterEnabled?"🔓 MASTER CONTROL : ON":"🔒 MASTER CONTROL : OFF";
+});
+masterCard.onclick=()=>set(ref(db,"status/masterControl"),!masterEnabled);
+
+/* ===== LEDS ===== */
+const states=[0,0,0,0];
+for(let i=1;i<=4;i++){
+  const b=document.createElement("button");
+  b.className="led-btn";
+  b.onclick=()=>{
+    if(!masterEnabled){alert("Master OFF");return;}
+    set(ref(db,"leds/led"+i),!states[i-1]);
+  };
+  ledGrid.appendChild(b);
+  onValue(ref(db,"leds/led"+i),s=>{
+    states[i-1]=!!s.val();
+    b.innerText=states[i-1]?"Turn OFF LED "+i:"Turn ON LED "+i;
+  });
+}
+
+/* ===== DARK MODE ===== */
 if(localStorage.theme==="dark"){
   document.body.classList.add("dark");
   darkToggle.checked=true;
@@ -199,85 +350,6 @@ darkToggle.onchange=()=>{
   document.body.classList.toggle("dark");
   localStorage.theme=document.body.classList.contains("dark")?"dark":"light";
 };
-
-/* REQUEST ACCESS */
-loginBtn.onclick=()=>{
-  const name=nameI.value.trim();
-  const phone=phoneI.value.trim();
-  if(name===""||phone.length!==10){
-    msg.innerText="Invalid details";
-    return;
-  }
-
-  set(ref(db,"requests/pending/"+phone),{
-    name,phone,time:new Date().toLocaleString()
-  });
-
-  localStorage.setItem("phone",phone);
-  msg.innerText="Waiting for approval…";
-
-  onValue(ref(db,"requests/approved/"+phone),s=>{
-    if(s.exists()){
-      openApp(s.val().name);
-    }
-  });
-};
-
-function openApp(name){
-  login.classList.add("hidden");
-  app.classList.remove("hidden");
-  hello.innerText="Hello, "+name+" 👋";
-  startESP();
-}
-
-/* SIDEBAR */
-window.toggleSidebar=()=>{
-  sidebar.classList.toggle("show");
-  overlay.classList.toggle("show");
-};
-overlay.onclick=()=>toggleSidebar();
-
-window.navigate=p=>{
-  document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
-  document.getElementById(p).classList.add("active");
-  sidebar.classList.remove("show");
-  overlay.classList.remove("show");
-};
-
-window.logout=()=>{
-  localStorage.clear();
-  location.reload();
-};
-
-/* ESP32 */
-function startESP(){
-  setInterval(()=>{
-    get(ref(db,"/status/lastSeen")).then(s=>{
-      const ok=s.exists()&&Date.now()-s.val()<10000;
-      espStatus.innerHTML=ok
-        ? "<span class='online'>● ESP32 ONLINE</span>"
-        : "<span class='offline'>● ESP32 OFFLINE</span>";
-    });
-  },5000);
-}
-
-/* TEMP */
-onValue(ref(db,"/status/temperature"),s=>{
-  if(s.exists()) temp.innerText="Temperature: "+s.val()+" °C";
-});
-
-/* LEDS */
-const states=[0,0,0,0];
-for(let i=1;i<=4;i++){
-  const b=document.createElement("button");
-  b.className="led-btn";
-  b.onclick=()=>set(ref(db,"/leds/led"+i),!states[i-1]);
-  ledGrid.appendChild(b);
-  onValue(ref(db,"/leds/led"+i),s=>{
-    states[i-1]=s.val();
-    b.innerText=states[i-1]?"Turn OFF LED "+i:"Turn ON LED "+i;
-  });
-}
 </script>
 
 </body>
