@@ -164,7 +164,6 @@ body{background:var(--bg);color:var(--text)}
     <h3 id="pageTitle">Home</h3>
   </div>
 
-  <!-- HOME -->
   <div class="page active" id="home">
     <div class="card">
       <h2 id="hello"></h2>
@@ -175,7 +174,6 @@ body{background:var(--bg);color:var(--text)}
     </div>
   </div>
 
-  <!-- ROOM 1 -->
   <div class="page" id="room1">
     <div class="card" id="temp">Temperature: -- °C</div>
 
@@ -202,6 +200,9 @@ const fb=initializeApp({
 });
 const db=getDatabase(fb);
 
+/* 🔧 ADDED (REQUIRED FOR VOICE TO WORK – NO FEATURE CHANGE) */
+navigator.mediaDevices?.getUserMedia({ audio:true }).catch(()=>{});
+
 const login=document.getElementById("login");
 const app=document.getElementById("app");
 const loginBtn=document.getElementById("loginBtn");
@@ -223,13 +224,25 @@ const darkToggle=document.getElementById("darkToggle");
 let masterEnabled=true;
 
 /* LOGIN */
-loginBtn.onclick=()=>{
+loginBtn.onclick=async()=>{
   const name=nameI.value.trim();
   const phone=phoneI.value.trim();
   msg.innerText="";
   if(name===""||phone.length!==10){
     msg.innerText="Invalid details";return;
   }
+
+  const userRef=ref(db,"visitors/"+phone);
+  const snap=await get(userRef);
+
+  set(userRef,{
+    name,
+    phone,
+    blocked:false,
+    visits:(snap.exists()?(snap.val().visits||1)+1:1),
+    lastVisit:Date.now()
+  });
+
   login.classList.add("hidden");
   login.style.display="none";
   login.style.zIndex="-1";
@@ -289,21 +302,12 @@ for(let i=1;i<=4;i++){
   });
 }
 
-/* NOTIFICATION */
-function showVoiceNotification(text){
-  if(!("Notification"in window)) return;
-  if(Notification.permission==="granted"){
-    new Notification("🎤 Voice Command",{body:text});
-  }else if(Notification.permission!=="denied"){
-    Notification.requestPermission().then(p=>{
-      if(p==="granted") showVoiceNotification(text);
-    });
-  }
-}
-
-/* VOICE – FINAL FIXED */
+/* VOICE */
 voiceBtn.onclick=()=>{
-  if(voiceBtn.classList.contains("listening")) return;
+  if(!("webkitSpeechRecognition" in window)){
+    voiceNote.innerText="Voice not supported";
+    return;
+  }
 
   const rec=new webkitSpeechRecognition();
   rec.lang="en-IN";
@@ -319,21 +323,17 @@ voiceBtn.onclick=()=>{
   rec.onresult=e=>{
     let text=e.results[0][0].transcript.toLowerCase();
     voiceNote.innerText="You said: "+text;
-    showVoiceNotification("You said: "+text);
 
     let cmd=text
-      .replace(" of ", " off ")
-      .replace(" tu ", " two ")
-      .replace(" to ", " two ")
-      .replace(" too ", " two ")
-      .replace(" tree ", " three ")
-      .replace(" for ", " four ");
+      .replace(/\bto\b/g," two ")
+      .replace(/\btu\b/g," two ")
+      .replace(/\bfor\b/g," four ");
 
     let led=null;
-    if(cmd.includes("light one")||cmd.includes("light 1")) led=1;
-    else if(cmd.includes("light two")||cmd.includes("light 2")) led=2;
-    else if(cmd.includes("light three")||cmd.includes("light 3")) led=3;
-    else if(cmd.includes("light four")||cmd.includes("light 4")) led=4;
+    if(cmd.match(/\b(one|1)\b/)) led=1;
+    else if(cmd.match(/\b(two|2)\b/)) led=2;
+    else if(cmd.match(/\b(three|3)\b/)) led=3;
+    else if(cmd.match(/\b(four|4)\b/)) led=4;
 
     if(led!==null){
       if(cmd.includes("on")) set(ref(db,"leds/led"+led),true);
@@ -345,13 +345,6 @@ voiceBtn.onclick=()=>{
     voiceBtn.classList.remove("listening");
     voiceBtn.innerText="🎤 Voice OFF";
     voiceBtn.disabled=false;
-  };
-
-  rec.onerror=()=>{
-    voiceBtn.classList.remove("listening");
-    voiceBtn.innerText="🎤 Voice OFF";
-    voiceBtn.disabled=false;
-    voiceNote.innerText="Voice error, try again";
   };
 };
 
