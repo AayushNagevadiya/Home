@@ -200,9 +200,14 @@ const fb=initializeApp({
 });
 const db=getDatabase(fb);
 
-/* 🔧 ADDED (REQUIRED FOR VOICE TO WORK – NO FEATURE CHANGE) */
+/* MIC PERMISSION */
 navigator.mediaDevices?.getUserMedia({ audio:true }).catch(()=>{});
 
+/* SPEECH FIX */
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+/* ELEMENTS */
 const login=document.getElementById("login");
 const app=document.getElementById("app");
 const loginBtn=document.getElementById("loginBtn");
@@ -238,14 +243,11 @@ loginBtn.onclick=async()=>{
   set(userRef,{
     name,
     phone,
-    blocked:false,
-    visits:(snap.exists()?(snap.val().visits||1)+1:1),
+    visits:(snap.exists()?(snap.val().visits||0)+1:1),
     lastVisit:Date.now()
   });
 
   login.classList.add("hidden");
-  login.style.display="none";
-  login.style.zIndex="-1";
   app.classList.remove("hidden");
   hello.innerText="Hello, "+name+" 👋";
   navigate("home");
@@ -304,43 +306,26 @@ for(let i=1;i<=4;i++){
 
 /* VOICE */
 voiceBtn.onclick=()=>{
-  if(!("webkitSpeechRecognition" in window)){
+  if(!SpeechRecognition){
     voiceNote.innerText="Voice not supported";
     return;
   }
-
-  const rec=new webkitSpeechRecognition();
+  const rec=new SpeechRecognition();
   rec.lang="en-IN";
-  rec.interimResults=false;
-
   voiceBtn.classList.add("listening");
   voiceBtn.innerText="🎤 Listening...";
   voiceBtn.disabled=true;
-  voiceNote.innerText="";
-
   rec.start();
 
   rec.onresult=e=>{
-    let text=e.results[0][0].transcript.toLowerCase();
-    voiceNote.innerText="You said: "+text;
-
-    let cmd=text
-      .replace(/\bto\b/g," two ")
-      .replace(/\btu\b/g," two ")
-      .replace(/\bfor\b/g," four ");
-
-    let led=null;
-    if(cmd.match(/\b(one|1)\b/)) led=1;
-    else if(cmd.match(/\b(two|2)\b/)) led=2;
-    else if(cmd.match(/\b(three|3)\b/)) led=3;
-    else if(cmd.match(/\b(four|4)\b/)) led=4;
-
-    if(led!==null){
-      if(cmd.includes("on")) set(ref(db,"leds/led"+led),true);
-      else if(cmd.includes("off")) set(ref(db,"leds/led"+led),false);
+    let t=e.results[0][0].transcript.toLowerCase();
+    voiceNote.innerText="You said: "+t;
+    let n=t.includes("one")?1:t.includes("two")?2:t.includes("three")?3:t.includes("four")?4:null;
+    if(n){
+      if(t.includes("on")) set(ref(db,"leds/led"+n),true);
+      if(t.includes("off")) set(ref(db,"leds/led"+n),false);
     }
   };
-
   rec.onend=()=>{
     voiceBtn.classList.remove("listening");
     voiceBtn.innerText="🎤 Voice OFF";
