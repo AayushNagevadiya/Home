@@ -8,7 +8,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-html,body{height:100%;margin:0;overflow:hidden;font-family:system-ui;}
+html,body{
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  font-family:system-ui;
+}
 :root{
   --bg:#f8fafc;--card:#ffffff;--panel:#e0f2fe;--text:#0f172a;
   --btn:#93c5fd;--btnText:#020617;
@@ -23,50 +28,101 @@ body{background:var(--bg);color:var(--text)}
 .hidden{display:none}
 
 /* LOGIN */
-.login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(135deg,#60a5fa,#38bdf8);z-index:100;}
-.login-box{background:var(--card);padding:40px;border-radius:20px;width:90%;max-width:380px;text-align:center}
-.login-box input{width:100%;padding:14px;margin:10px 0;border-radius:10px;border:1px solid #cbd5f5}
-.login-box button{width:100%;padding:14px;border:none;border-radius:12px;background:#60a5fa;color:white;font-size:18px}
+.login{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#60a5fa,#38bdf8);
+  z-index:100;
+}
+.login-box{
+  background:var(--card);
+  padding:40px;border-radius:20px;
+  width:90%;max-width:380px;text-align:center
+}
+.login-box input{
+  width:100%;padding:14px;margin:10px 0;
+  border-radius:10px;border:1px solid #cbd5f5
+}
+.login-box button{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:#60a5fa;color:white;font-size:18px
+}
 #msg{color:#dc2626;font-weight:600}
 
 /* SIDEBAR */
-.sidebar{position:fixed;top:0;left:0;height:100%;width:240px;background:var(--panel);padding:20px;
-transform:translateX(-100%);transition:.3s;z-index:20}
+.sidebar{
+  position:fixed;top:0;left:0;height:100%;width:240px;
+  background:var(--panel);padding:20px;
+  transform:translateX(-100%);
+  transition:.3s;z-index:20
+}
 .sidebar.show{transform:translateX(0)}
-.sidebar button{width:100%;padding:12px;margin:8px 0;border:none;border-radius:12px;
-background:var(--btn);color:var(--btnText);font-size:16px;text-align:left}
-.toggle{margin-top:20px;padding:12px;border-radius:12px;background:var(--btn);
-display:flex;justify-content:space-between;align-items:center}
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);
-opacity:0;pointer-events:none;transition:.3s;z-index:15}
+.sidebar button{
+  width:100%;padding:12px;margin:8px 0;
+  border:none;border-radius:12px;
+  background:var(--btn);color:var(--btnText);
+  font-size:16px;text-align:left
+}
+.toggle{
+  margin-top:20px;padding:12px;border-radius:12px;
+  background:var(--btn);
+  display:flex;justify-content:space-between;align-items:center
+}
+#overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.4);
+  opacity:0;pointer-events:none;
+  transition:.3s;z-index:15
+}
 #overlay.show{opacity:1;pointer-events:auto}
 
 /* APP */
-#app{position:fixed;inset:0}
-.topbar{height:56px;display:flex;align-items:center;padding:0 16px;
-background:linear-gradient(135deg,var(--top1),var(--top2));color:white}
+#app{position:fixed; inset:0}
+.topbar{
+  height:56px;display:flex;align-items:center;
+  padding:0 16px;
+  background:linear-gradient(135deg,var(--top1),var(--top2));
+  color:white
+}
 .menu{font-size:26px;cursor:pointer}
 .topbar h3{flex:1;text-align:center;margin:0}
 
 /* PAGES */
-.page{position:absolute;inset:56px 0 0 0;padding:20px;display:none;overflow-y:auto}
+.page{
+  position:absolute; inset:56px 0 0 0;
+  padding:20px; display:none; overflow-y:auto
+}
 .page.active{display:block}
 
 /* CARDS */
-.card{background:var(--card);padding:22px;border-radius:20px;margin-bottom:20px}
+.card{
+  background:var(--card);
+  padding:22px;border-radius:20px;
+  margin-bottom:20px
+}
 .master-card{text-align:center;font-weight:700;cursor:pointer}
 .master-on{background:#dcfce7;color:#166534}
 .master-off{background:#fee2e2;color:#991b1b}
 .online{color:var(--success)}
 .offline{color:var(--danger)}
 .led-vertical{display:flex;flex-direction:column;gap:14px}
-.led-btn{padding:18px;border:none;border-radius:18px;font-size:17px;font-weight:700;
-background:var(--btn);color:var(--btnText)}
+.led-btn{
+  padding:18px;border:none;border-radius:18px;
+  font-size:17px;font-weight:700;
+  background:var(--btn);color:var(--btnText)
+}
 
 /* VOICE */
-.voice-btn{width:100%;padding:18px;border:none;border-radius:18px;font-size:18px;
-font-weight:700;color:white;background:#ef4444}
+.voice-btn{
+  width:100%;
+  padding:18px;
+  border:none;
+  border-radius:18px;
+  font-size:18px;
+  font-weight:700;
+  color:white;
+  background:#ef4444;
+}
 .voice-btn.listening{background:#22c55e}
 .voice-note{margin-top:10px;font-weight:600}
 </style>
@@ -105,6 +161,7 @@ font-weight:700;color:white;background:#ef4444}
     <h3 id="pageTitle">Home</h3>
   </div>
 
+  <!-- HOME -->
   <div class="page active" id="home">
     <div class="card">
       <h2 id="hello"></h2>
@@ -115,6 +172,7 @@ font-weight:700;color:white;background:#ef4444}
     </div>
   </div>
 
+  <!-- ROOM 1 -->
   <div class="page" id="room1">
     <div class="card" id="temp">Temperature: -- °C</div>
 
@@ -132,8 +190,8 @@ font-weight:700;color:white;background:#ef4444}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue } from
-"https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 /* FIREBASE */
 const fb=initializeApp({
@@ -164,23 +222,25 @@ const darkToggle=document.getElementById("darkToggle");
 let masterEnabled=true;
 let pageStack=["home"];
 
-/* LOGIN (ADMIN BLOCK SAFE) */
+/* LOGIN */
 loginBtn.onclick=()=>{
   const name=nameI.value.trim();
   const phone=phoneI.value.trim();
   msg.innerText="";
-  if(name===""||phone.length!==10){msg.innerText="Invalid details";return;}
 
-  const userRef=ref(db,"visitors/"+phone);
-  get(userRef).then(s=>{
+  if(name===""||phone.length!==10){
+    msg.innerText="Invalid details"; return;
+  }
+
+  const uRef=ref(db,"visitors/"+phone);
+  get(uRef).then(s=>{
     if(s.exists()){
       const d=s.val();
-      if(d.blocked===true){msg.innerText="🚫 You are blocked by admin";return;}
-      if(d.name!==name){msg.innerText="❌ Number registered with another name";return;}
-      set(ref(db,"visitors/"+phone+"/lastVisit"),Date.now());
-      set(ref(db,"visitors/"+phone+"/visits"),(d.visits||0)+1);
+      if(d.blocked){ msg.innerText="❌ Admin blocked you"; return; }
+      if(d.name!==name){ msg.innerText="❌ Number already registered"; return; }
+      set(uRef,{...d,visits:(d.visits||0)+1,lastVisit:Date.now()});
     }else{
-      set(userRef,{name,phone,visits:1,firstVisit:Date.now(),lastVisit:Date.now(),blocked:false});
+      set(uRef,{name,phone,visits:1,firstVisit:Date.now(),lastVisit:Date.now(),blocked:false});
     }
     login.style.display="none";
     app.classList.remove("hidden");
@@ -190,26 +250,48 @@ loginBtn.onclick=()=>{
 };
 
 /* SIDEBAR */
-window.toggleSidebar=()=>{sidebar.classList.toggle("show");overlay.classList.toggle("show");};
+window.toggleSidebar=()=>{
+  sidebar.classList.toggle("show");
+  overlay.classList.toggle("show");
+};
 overlay.onclick=()=>{sidebar.classList.remove("show");overlay.classList.remove("show");};
 
-/* NAVIGATION */
-window.navigate=(p,reset=false)=>{
+window.navigate=(p,skip)=>{
   document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
   document.getElementById(p).classList.add("active");
   pageTitle.innerText=p==="home"?"Home":"Room 1";
-  if(reset) pageStack=["home"];
-  else if(pageStack[pageStack.length-1]!==p) pageStack.push(p);
-  sidebar.classList.remove("show");overlay.classList.remove("show");
+  sidebar.classList.remove("show");
+  overlay.classList.remove("show");
+  if(!skip) pageStack.push(p);
 };
+
 window.logout=()=>location.reload();
+
+/* SWIPE BACK */
+let sx=0;
+document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{
+  let dx=e.changedTouches[0].clientX-sx;
+  if(Math.abs(dx)<80)return;
+  sidebar.classList.remove("show");
+  overlay.classList.remove("show");
+  if(dx>80){
+    if(pageStack.length>1){
+      pageStack.pop();
+      navigate(pageStack[pageStack.length-1],true);
+    }else{
+      if(confirm("Exit app?")) window.close();
+    }
+  }
+});
 
 /* ESP STATUS */
 setInterval(()=>{
   get(ref(db,"status/lastSeen")).then(s=>{
-    espStatus.innerHTML=s.exists()&&Date.now()-s.val()<10000
-    ?"<span class='online'>● ESP32 ONLINE</span>"
-    :"<span class='offline'>● ESP32 OFFLINE</span>";
+    espStatus.innerHTML=
+      s.exists()&&Date.now()-s.val()<10000
+      ?"<span class='online'>● ESP32 ONLINE</span>"
+      :"<span class='offline'>● ESP32 OFFLINE</span>";
   });
 },1000);
 
@@ -231,7 +313,7 @@ const states=[0,0,0,0];
 for(let i=1;i<=4;i++){
   const b=document.createElement("button");
   b.className="led-btn";
-  b.onclick=()=>{if(masterEnabled) set(ref(db,"leds/led"+i),!states[i-1]);};
+  b.onclick=()=>{ if(masterEnabled) set(ref(db,"leds/led"+i),!states[i-1]); };
   ledGrid.appendChild(b);
   onValue(ref(db,"leds/led"+i),s=>{
     states[i-1]=!!s.val();
@@ -239,46 +321,71 @@ for(let i=1;i<=4;i++){
   });
 }
 
-/* VOICE — FIXED OFF BUG */
-let recognition;
+/* VOICE – FINAL FIX */
+let recognition=null;
+let listening=false;
+
 voiceBtn.onclick=()=>{
+  if(listening) return;
+
   recognition=new webkitSpeechRecognition();
   recognition.lang="en-IN";
-  recognition.start();
+  recognition.continuous=false;
+  recognition.interimResults=false;
+
+  listening=true;
   voiceBtn.classList.add("listening");
   voiceBtn.innerText="🎤 Listening...";
-  recognition.onresult=e=>{
-    let t=e.results[0][0].transcript.toLowerCase();
-    voiceNote.innerText="You said: "+t;
+  voiceNote.innerText="";
 
-    t = t
+  recognition.start();
+  const timeout=setTimeout(()=>recognition.stop(),2500);
+
+  recognition.onresult=e=>{
+    clearTimeout(timeout);
+    let raw=e.results[0][0].transcript.toLowerCase();
+    voiceNote.innerText="You said: "+raw;
+
+    let t=raw
+      .replace(/\bof\b/g,"off")
+      .replace(/\bo f\b/g,"off")
+      .replace(/\bwon\b/g,"one")
       .replace(/\bto\b/g,"two")
       .replace(/\btoo\b/g,"two")
       .replace(/\btu\b/g,"two")
       .replace(/\btree\b/g,"three")
       .replace(/\bfor\b/g,"four");
 
-    let led =
-      t.includes("light one") || t.includes("light 1") ? 1 :
-      t.includes("light two") || t.includes("light 2") ? 2 :
-      t.includes("light three") || t.includes("light 3") ? 3 :
-      t.includes("light four") || t.includes("light 4") ? 4 :
-      null;
+    let led=
+      t.includes("light one")||t.includes("light 1")?1:
+      t.includes("light two")||t.includes("light 2")?2:
+      t.includes("light three")||t.includes("light 3")?3:
+      t.includes("light four")||t.includes("light 4")?4:null;
 
     if(led!==null){
-      if(/\bon\b/.test(t)) set(ref(db,"leds/led"+led),true);
-      else if(/\boff\b/.test(t)) set(ref(db,"leds/led"+led),false);
+      if(/\boff\b/.test(t)) set(ref(db,"leds/led"+led),false);
+      else if(/\bon\b/.test(t)) set(ref(db,"leds/led"+led),true);
     }
+  };
 
+  recognition.onerror=()=>recognition.stop();
+
+  recognition.onend=()=>{
+    listening=false;
     voiceBtn.classList.remove("listening");
     voiceBtn.innerText="🎤 Voice OFF";
   };
 };
 
 /* DARK MODE */
-if(localStorage.theme==="dark"){document.body.classList.add("dark");darkToggle.checked=true;}
-darkToggle.onchange=()=>{document.body.classList.toggle("dark");
-localStorage.theme=document.body.classList.contains("dark")?"dark":"light";};
+if(localStorage.theme==="dark"){
+  document.body.classList.add("dark");
+  darkToggle.checked=true;
+}
+darkToggle.onchange=()=>{
+  document.body.classList.toggle("dark");
+  localStorage.theme=document.body.classList.contains("dark")?"dark":"light";
+};
 </script>
 
 </body>
