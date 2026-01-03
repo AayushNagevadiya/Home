@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Home</title>
 
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
@@ -80,7 +77,7 @@ body{background:var(--bg);color:var(--text)}
 #overlay.show{opacity:1;pointer-events:auto}
 
 /* APP */
-#app{position:fixed; inset:0; z-index:10}
+#app{position:fixed; inset:0}
 .topbar{
   height:56px;display:flex;align-items:center;
   padding:0 16px;
@@ -117,13 +114,8 @@ body{background:var(--bg);color:var(--text)}
 
 /* VOICE */
 .voice-btn{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:18px;
-  font-size:18px;
-  font-weight:700;
-  color:white;
+  width:100%;padding:18px;border:none;border-radius:18px;
+  font-size:18px;font-weight:700;color:white;
   background:#ef4444;
 }
 .voice-btn.listening{background:#22c55e}
@@ -191,23 +183,17 @@ body{background:var(--bg);color:var(--text)}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue } from
+"https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
+/* FIREBASE */
 const fb=initializeApp({
   apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
 });
 const db=getDatabase(fb);
 
-/* MIC PERMISSION */
-navigator.mediaDevices?.getUserMedia({ audio:true }).catch(()=>{});
-
-/* SPEECH FIX */
-const SpeechRecognition =
-  window.SpeechRecognition || window.webkitSpeechRecognition;
-
-/* ELEMENTS */
+/* DOM */
 const login=document.getElementById("login");
 const app=document.getElementById("app");
 const loginBtn=document.getElementById("loginBtn");
@@ -229,28 +215,29 @@ const darkToggle=document.getElementById("darkToggle");
 let masterEnabled=true;
 
 /* LOGIN */
-loginBtn.onclick=async()=>{
+loginBtn.onclick=()=>{
   const name=nameI.value.trim();
   const phone=phoneI.value.trim();
   msg.innerText="";
   if(name===""||phone.length!==10){
     msg.innerText="Invalid details";return;
   }
-
   const userRef=ref(db,"visitors/"+phone);
-  const snap=await get(userRef);
-
-  set(userRef,{
-    name,
-    phone,
-    visits:(snap.exists()?(snap.val().visits||0)+1:1),
-    lastVisit:Date.now()
+  get(userRef).then(s=>{
+    if(s.exists() && s.val().name!==name){
+      msg.innerText="❌ Number already registered";
+      return;
+    }
+    set(userRef,{
+      name,phone,
+      visits:(s.exists()? (s.val().visits||0)+1 : 1),
+      lastVisit:Date.now()
+    });
+    login.style.display="none";
+    app.classList.remove("hidden");
+    hello.innerText="Hello, "+name+" 👋";
+    navigate("home");
   });
-
-  login.classList.add("hidden");
-  app.classList.remove("hidden");
-  hello.innerText="Hello, "+name+" 👋";
-  navigate("home");
 };
 
 /* SIDEBAR */
@@ -305,31 +292,31 @@ for(let i=1;i<=4;i++){
 }
 
 /* VOICE */
+let recognition;
 voiceBtn.onclick=()=>{
-  if(!SpeechRecognition){
-    voiceNote.innerText="Voice not supported";
-    return;
+  if(!("webkitSpeechRecognition"in window)){
+    alert("Voice not supported");return;
   }
-  const rec=new SpeechRecognition();
-  rec.lang="en-IN";
+  recognition=new webkitSpeechRecognition();
+  recognition.lang="en-IN";
+  recognition.start();
   voiceBtn.classList.add("listening");
   voiceBtn.innerText="🎤 Listening...";
-  voiceBtn.disabled=true;
-  rec.start();
-
-  rec.onresult=e=>{
+  recognition.onresult=e=>{
     let t=e.results[0][0].transcript.toLowerCase();
     voiceNote.innerText="You said: "+t;
-    let n=t.includes("one")?1:t.includes("two")?2:t.includes("three")?3:t.includes("four")?4:null;
-    if(n){
-      if(t.includes("on")) set(ref(db,"leds/led"+n),true);
-      if(t.includes("off")) set(ref(db,"leds/led"+n),false);
+    t=t.replace("to","two").replace("too","two").replace("tu","two")
+       .replace("tree","three").replace("for","four");
+    let led=t.includes("one")||t.includes("1")?1:
+            t.includes("two")||t.includes("2")?2:
+            t.includes("three")||t.includes("3")?3:
+            t.includes("four")||t.includes("4")?4:null;
+    if(led){
+      if(t.includes("on")) set(ref(db,"leds/led"+led),true);
+      if(t.includes("off")) set(ref(db,"leds/led"+led),false);
     }
-  };
-  rec.onend=()=>{
     voiceBtn.classList.remove("listening");
     voiceBtn.innerText="🎤 Voice OFF";
-    voiceBtn.disabled=false;
   };
 };
 
