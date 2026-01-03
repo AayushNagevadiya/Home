@@ -2,391 +2,357 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+<title>Smart Home Pro</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-html,body{
-  height:100%;
-  margin:0;
-  overflow:hidden;
-  font-family:system-ui;
+:root {
+  --bg: #f0f7ff;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --accent: #0ea5e9;
+  --accent-gradient: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  --text-main: #0f172a;
+  --text-sub: #64748b;
+  --glass-border: rgba(14, 165, 233, 0.2);
+  --shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.15);
+  /* Dark Red Notification Colors */
+  --alert-bg: #450a0a; 
+  --alert-text: #fecaca;
+  --alert-border: #991b1b;
 }
-:root{
-  --bg:#f8fafc;--card:#ffffff;--panel:#e0f2fe;--text:#0f172a;
-  --btn:#93c5fd;--btnText:#020617;
-  --top1:#60a5fa;--top2:#38bdf8;
-  --success:#22c55e;--danger:#ef4444;
-}
-.dark{
-  --bg:#020617;--card:#0f172a;--panel:#1e293b;--text:#e5e7eb;
-  --btn:#334155;--btnText:#e5e7eb;
-}
-body{background:var(--bg);color:var(--text)}
-.hidden{display:none}
 
-/* LOGIN */
-.login{
-  position:fixed; inset:0;
-  display:flex; align-items:center; justify-content:center;
-  background:linear-gradient(135deg,#60a5fa,#38bdf8);
-  z-index:100;
+.dark {
+  --bg: #0b1120;
+  --card-bg: rgba(30, 41, 59, 0.8);
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
 }
-.login-box{
-  background:var(--card);
-  padding:40px;border-radius:20px;
-  width:90%;max-width:380px;text-align:center
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0; font-family: 'Inter', system-ui, -apple-system;
+  background-color: var(--bg); color: var(--text-main);
+  height: 100vh; overflow: hidden; transition: 0.4s ease;
 }
-.login-box input{
-  width:100%;padding:14px;margin:10px 0;
-  border-radius:10px;border:1px solid #cbd5f5
+
+.hidden { display: none !important; }
+
+/* REDESIGNED LOGIN - MATCHING YOUR IMAGE */
+.login {
+  position: fixed; inset: 0; z-index: 1000;
+  background: radial-gradient(circle at center, #1e90ff 0%, #1e56ff 100%);
+  display: flex; align-items: center; justify-content: center;
 }
-.login-box button{
-  width:100%;padding:14px;border:none;border-radius:12px;
-  background:#60a5fa;color:white;font-size:18px
+.login-box {
+  background: #eef5ff; 
+  padding: 60px 40px;
+  border-radius: 50px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
-#msg{color:#dc2626;font-weight:600}
+.login-box h1 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 40px 0;
+}
+.login-box input {
+  width: 100%;
+  padding: 18px 25px;
+  margin: 12px 0;
+  border-radius: 20px;
+  border: 1px solid #dce4f0;
+  background: #ffffff;
+  font-size: 16px;
+  outline: none;
+}
+.login-box button {
+  width: 100%;
+  padding: 18px;
+  margin-top: 25px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(to right, #0ea5e9, #2563eb);
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* DARK RED NOTIFICATION BOX */
+#msg {
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  display: none;
+  background: var(--alert-bg);
+  color: var(--alert-text);
+  border: 1px solid var(--alert-border);
+}
+
+/* TOPBAR */
+.topbar { height: 70px; display: flex; align-items: center; padding: 0 25px; }
+.menu-icon {
+  font-size: 24px; cursor: pointer; width: 45px; height: 45px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--card-bg); border-radius: 12px; box-shadow: var(--shadow);
+  color: var(--accent);
+}
+.topbar h3 { flex: 1; text-align: center; font-weight: 700; color: var(--text-main); }
 
 /* SIDEBAR */
-.sidebar{
-  position:fixed;top:0;left:0;height:100%;width:240px;
-  background:var(--panel);padding:20px;
-  transform:translateX(-100%);
-  transition:.3s;z-index:20
+.sidebar {
+  position: fixed; top: 0; left: 0; height: 100%; width: 280px;
+  background: var(--card-bg); backdrop-filter: blur(20px);
+  padding: 30px 20px; transform: translateX(-100%); transition: 0.4s;
+  z-index: 100; border-right: 1px solid var(--glass-border);
 }
-.sidebar.show{transform:translateX(0)}
-.sidebar button{
-  width:100%;padding:12px;margin:8px 0;
-  border:none;border-radius:12px;
-  background:var(--btn);color:var(--btnText);
-  font-size:16px;text-align:left
+.sidebar.show { transform: translateX(0); }
+.sidebar button {
+  width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 15px;
+  background: transparent; color: var(--text-main); font-size: 16px;
+  text-align: left; cursor: pointer;
 }
-.toggle{
-  margin-top:20px;padding:12px;border-radius:12px;
-  background:var(--btn);
-  display:flex;justify-content:space-between;align-items:center
-}
-#overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.4);
-  opacity:0;pointer-events:none;
-  transition:.3s;z-index:15
-}
-#overlay.show{opacity:1;pointer-events:auto}
-
-/* APP */
-#app{position:fixed; inset:0}
-.topbar{
-  height:56px;display:flex;align-items:center;
-  padding:0 16px;
-  background:linear-gradient(135deg,var(--top1),var(--top2));
-  color:white
-}
-.menu{font-size:26px;cursor:pointer}
-.topbar h3{flex:1;text-align:center;margin:0}
+.sidebar button:hover { background: var(--accent); color: white; }
 
 /* PAGES */
-.page{
-  position:absolute; inset:56px 0 0 0;
-  padding:20px; display:none; overflow-y:auto
-}
-.page.active{display:block}
+.page { position: absolute; inset: 70px 0 0 0; padding: 20px; display: none; overflow-y: auto; }
+.page.active { display: block; animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* CARDS */
-.card{
-  background:var(--card);
-  padding:22px;border-radius:20px;
-  margin-bottom:20px
+.card {
+  background: var(--card-bg); backdrop-filter: blur(15px);
+  padding: 25px; border-radius: 24px; margin-bottom: 20px;
+  border: 1px solid var(--glass-border); box-shadow: var(--shadow);
 }
-.master-card{text-align:center;font-weight:700;cursor:pointer}
-.master-on{background:#dcfce7;color:#166534}
-.master-off{background:#fee2e2;color:#991b1b}
-.online{color:var(--success)}
-.offline{color:var(--danger)}
-.led-vertical{display:flex;flex-direction:column;gap:14px}
-.led-btn{
-  padding:18px;border:none;border-radius:18px;
-  font-size:17px;font-weight:700;
-  background:var(--btn);color:var(--btnText)
+
+/* CLOCK */
+.clock-hub { text-align: center; margin-bottom: 20px; }
+#time-now { font-size: 40px; font-weight: 800; color: var(--accent); margin: 0; }
+#date-now { font-size: 14px; color: var(--text-sub); font-weight: 600; margin-top: 5px; }
+
+.master-card { text-align: center; font-weight: 800; cursor: pointer; transition: 0.3s; }
+.master-on { background: #10b981; color: white; }
+.master-off { background: #f43f5e; color: white; }
+
+.led-grid { display: grid; gap: 15px; }
+.led-btn {
+  padding: 20px; border: 1px solid var(--glass-border); border-radius: 20px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  background: var(--card-bg); color: var(--text-main); transition: 0.3s;
 }
+.led-active { background: var(--accent-gradient); color: white; border: none; }
 
 /* VOICE */
-.voice-btn{
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:18px;
-  font-size:18px;
-  font-weight:700;
-  color:white;
-  background:#ef4444;
+.voice-btn {
+  width: 100%; padding: 20px; border: none; border-radius: 20px;
+  background: var(--accent-gradient); color: white; font-weight: 700; font-size: 18px;
 }
-.voice-btn.listening{background:#22c55e}
-.voice-note{margin-top:10px;font-weight:600}
+.listening-anim { animation: pulse 1.5s infinite; filter: hue-rotate(90deg); }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+#overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: 0.3s; z-index: 90; }
+#overlay.show { opacity: 1; pointer-events: auto; }
+.status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+.online-dot { background: #10b981; box-shadow: 0 0 10px #10b981; }
+.offline-dot { background: #f43f5e; }
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
 <div class="login" id="login">
   <div class="login-box">
-    <h2>Smart Home</h2>
-    <input id="name" placeholder="Your Name">
-    <input id="phone" placeholder="Enter your number" maxlength="10"
-      oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+    <h1>Smart Home</h1>
+    <input id="name" placeholder="Full Name">
+    <input id="phone" placeholder="Mobile Number" maxlength="10">
     <button id="loginBtn">Login</button>
-    <p id="msg"></p>
+    <div id="msg"></div>
   </div>
 </div>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <button onclick="navigate('home')">🏠 Home</button>
-  <button onclick="navigate('room1')">💡 Room 1</button>
-  <button onclick="logout()">🚪 Logout</button>
-  <div class="toggle">
-    <span>🌙 Dark Mode</span>
-    <input type="checkbox" id="darkToggle">
-  </div>
-</div>
-<div id="overlay"></div>
-
-<!-- APP -->
 <div id="app" class="hidden">
+  <div class="sidebar" id="sidebar">
+    <h2 style="margin-bottom:30px">Menu</h2>
+    <button onclick="navigate('home')"><i class="fa fa-home"></i> &nbsp; Dashboard</button>
+    <button onclick="navigate('room1')"><i class="fa fa-lightbulb"></i> &nbsp; Living Room</button>
+    <button onclick="logout()"><i class="fa fa-sign-out-alt"></i> &nbsp; Log Out</button>
+    <div style="margin-top:20px; padding:15px; background:rgba(14,165,233,0.1); border-radius:15px; display:flex; justify-content:space-between; align-items:center">
+      <span>Dark Mode</span>
+      <input type="checkbox" id="darkToggle">
+    </div>
+  </div>
+  <div id="overlay"></div>
+
   <div class="topbar">
-    <span class="menu" onclick="toggleSidebar()">☰</span>
-    <h3 id="pageTitle">Home</h3>
+    <div class="menu-icon" onclick="toggleSidebar()"><i class="fa fa-bars"></i></div>
+    <h3 id="pageTitle">Dashboard</h3>
+    <div style="width:45px"></div>
   </div>
 
-  <!-- HOME -->
   <div class="page active" id="home">
+    <div class="clock-hub">
+      <h1 id="time-now">00:00:00</h1>
+      <div id="date-now">Monday, 01 Jan 2024</div>
+    </div>
+
     <div class="card">
-      <h2 id="hello"></h2>
-      <div id="espStatus">Checking ESP32…</div>
+      <h2 id="hello" style="margin:0 0 10px 0"></h2>
+      <div id="espStatus" style="font-size:14px; font-weight:600"></div>
     </div>
-    <div class="card master-card master-off" id="masterCard">
-      🔒 MASTER CONTROL : OFF
-    </div>
+    <div class="card master-card master-off" id="masterCard">MASTER CONTROL OFF</div>
   </div>
 
-  <!-- ROOM 1 -->
   <div class="page" id="room1">
-    <div class="card" id="temp">Temperature: -- °C</div>
-
-    <div class="card">
-      <h3>🎤 Voice Control</h3>
-      <button class="voice-btn" id="voiceBtn">🎤 Voice OFF</button>
-      <div class="voice-note" id="voiceNote"></div>
+    <div class="card" style="display:flex; align-items:center; justify-content:space-between">
+      <span style="font-weight:700">Room Temperature</span>
+      <span id="temp" style="font-size:24px; font-weight:800; color:var(--accent)">-- °C</span>
     </div>
-
     <div class="card">
-      <div class="led-vertical" id="ledGrid"></div>
+      <h3 style="margin-top:0"><i class="fa fa-microphone"></i> Smart Voice</h3>
+      <button class="voice-btn" id="voiceBtn">Start Listening</button>
+      <div id="voiceNote" style="font-style:italic; color:var(--text-sub); text-align:center; margin-top:10px"></div>
+    </div>
+    <div class="card" style="background:transparent; padding:0; box-shadow:none; border:none">
+      <div class="led-grid" id="ledGrid"></div>
     </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
-/* FIREBASE */
 const fb=initializeApp({
   apiKey:"AIzaSyAht7TWN8NlbICl0VbEIuc19Mri7oPlXvc",
   databaseURL:"https://home-automation-89830-default-rtdb.firebaseio.com"
 });
 const db=getDatabase(fb);
 
-/* DOM */
-const login=document.getElementById("login");
-const app=document.getElementById("app");
-const loginBtn=document.getElementById("loginBtn");
-const nameI=document.getElementById("name");
-const phoneI=document.getElementById("phone");
-const msg=document.getElementById("msg");
-const hello=document.getElementById("hello");
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const pageTitle=document.getElementById("pageTitle");
-const espStatus=document.getElementById("espStatus");
-const temp=document.getElementById("temp");
-const ledGrid=document.getElementById("ledGrid");
-const masterCard=document.getElementById("masterCard");
-const voiceBtn=document.getElementById("voiceBtn");
-const voiceNote=document.getElementById("voiceNote");
-const darkToggle=document.getElementById("darkToggle");
-
-let masterEnabled=true;
+const nameI=document.getElementById("name"), phoneI=document.getElementById("phone"), msgBox=document.getElementById("msg");
+const login=document.getElementById("login"), app=document.getElementById("app");
 let pageStack=["home"];
 
-/* LOGIN */
-loginBtn.onclick=()=>{
-  const name=nameI.value.trim();
-  const phone=phoneI.value.trim();
-  msg.innerText="";
+function updateClock() {
+  const now = new Date();
+  document.getElementById("time-now").innerText = now.toLocaleTimeString([], { hour12: true });
+  document.getElementById("date-now").innerText = now.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-  if(name===""||phone.length!==10){
-    msg.innerText="Invalid details"; return;
+document.getElementById("loginBtn").onclick=()=>{
+  const n=nameI.value.trim(), p=phoneI.value.trim();
+  if(!n || p.length!==10) {
+      msgBox.style.display = "block";
+      msgBox.innerText="⚠️ Enter valid Name & 10-digit Phone";
+      return;
   }
-
-  const uRef=ref(db,"visitors/"+phone);
-  get(uRef).then(s=>{
-    if(s.exists()){
-      const d=s.val();
-      if(d.blocked){ msg.innerText="❌ Admin blocked you"; return; }
-      if(d.name!==name){ msg.innerText="❌ Number already registered"; return; }
-      set(uRef,{...d,visits:(d.visits||0)+1,lastVisit:Date.now()});
-    }else{
-      set(uRef,{name,phone,visits:1,firstVisit:Date.now(),lastVisit:Date.now(),blocked:false});
+  
+  get(ref(db,"visitors/"+p)).then(s=>{
+    if(s.exists() && s.val().blocked) {
+        msgBox.style.display = "block";
+        msgBox.innerHTML="<i class='fa fa-ban'></i> ACCESS BLOCKED <br> Contact administrator.";
+        return;
     }
-    login.style.display="none";
+    const activeRef = ref(db, "activeUsers/" + p);
+    set(activeRef, { name: n });
+    onDisconnect(activeRef).remove();
+    login.style.display="none"; 
     app.classList.remove("hidden");
-    hello.innerText="Hello, "+name+" 👋";
-    navigate("home",true);
+    document.getElementById("hello").innerText="Hello, "+n;
   });
 };
-
-/* SIDEBAR */
-window.toggleSidebar=()=>{
-  sidebar.classList.toggle("show");
-  overlay.classList.toggle("show");
-};
-overlay.onclick=()=>{sidebar.classList.remove("show");overlay.classList.remove("show");};
 
 window.navigate=(p,skip)=>{
   document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
   document.getElementById(p).classList.add("active");
-  pageTitle.innerText=p==="home"?"Home":"Room 1";
-  sidebar.classList.remove("show");
-  overlay.classList.remove("show");
-  if(!skip) pageStack.push(p);
+  document.getElementById("pageTitle").innerText=p==="home"?"Dashboard":"Living Room";
+  document.getElementById("sidebar").classList.remove("show");
+  document.getElementById("overlay").classList.remove("show");
+  if(!skip && pageStack[pageStack.length-1] !== p) pageStack.push(p);
 };
 
+window.toggleSidebar=()=>{
+  document.getElementById("sidebar").classList.toggle("show");
+  document.getElementById("overlay").classList.toggle("show");
+};
+document.getElementById("overlay").onclick=window.toggleSidebar;
 window.logout=()=>location.reload();
 
-/* SWIPE BACK */
-let sx=0;
-document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
-document.addEventListener("touchend",e=>{
-  let dx=e.changedTouches[0].clientX-sx;
-  if(Math.abs(dx)<80)return;
-  sidebar.classList.remove("show");
-  overlay.classList.remove("show");
-  if(dx>80){
-    if(pageStack.length>1){
-      pageStack.pop();
-      navigate(pageStack[pageStack.length-1],true);
-    }else{
-      if(confirm("Exit app?")) window.close();
-    }
-  }
-});
-
-/* ESP STATUS */
+/* FIREBASE SYNC */
 setInterval(()=>{
   get(ref(db,"status/lastSeen")).then(s=>{
-    espStatus.innerHTML=
-      s.exists()&&Date.now()-s.val()<10000
-      ?"<span class='online'>● ESP32 ONLINE</span>"
-      :"<span class='offline'>● ESP32 OFFLINE</span>";
+    const online = s.exists()&&Date.now()-s.val()<10000;
+    document.getElementById("espStatus").innerHTML = online 
+      ? `<span class="status-dot online-dot"></span> System Connected` 
+      : `<span class="status-dot offline-dot"></span> System Offline`;
   });
-},1000);
+},2000);
 
-/* TEMP */
-onValue(ref(db,"status/temperature"),s=>{
-  if(s.exists()) temp.innerText="Temperature: "+s.val()+" °C";
-});
+onValue(ref(db,"status/temperature"),s=>{ if(s.exists()) document.getElementById("temp").innerText=s.val()+"°C"; });
 
-/* MASTER */
+const mc = document.getElementById("masterCard");
 onValue(ref(db,"status/masterControl"),s=>{
-  masterEnabled=!!s.val();
-  masterCard.className="card master-card "+(masterEnabled?"master-on":"master-off");
-  masterCard.innerText=masterEnabled?"🔓 MASTER CONTROL : ON":"🔒 MASTER CONTROL : OFF";
+  window.masterEnabled=!!s.val();
+  mc.className="card master-card "+(window.masterEnabled?"master-on":"master-off");
+  mc.innerText=window.masterEnabled?"MASTER CONTROL ON":"MASTER CONTROL OFF";
 });
-masterCard.onclick=()=>set(ref(db,"status/masterControl"),!masterEnabled);
+mc.onclick=()=>set(ref(db,"status/masterControl"),!window.masterEnabled);
 
-/* LEDS */
 const states=[0,0,0,0];
 for(let i=1;i<=4;i++){
   const b=document.createElement("button");
   b.className="led-btn";
-  b.onclick=()=>{ if(masterEnabled) set(ref(db,"leds/led"+i),!states[i-1]); };
-  ledGrid.appendChild(b);
+  document.getElementById("ledGrid").appendChild(b);
   onValue(ref(db,"leds/led"+i),s=>{
     states[i-1]=!!s.val();
-    b.innerText=states[i-1]?"Turn OFF LED "+i:"Turn ON LED "+i;
+    b.innerText=states[i-1]?"LED "+i+" - Active":"LED "+i+" - Inactive";
+    b.className=states[i-1]?"led-btn led-active":"led-btn";
   });
+  b.onclick=()=>{ if(window.masterEnabled) set(ref(db,"leds/led"+i),!states[i-1]); };
 }
 
-/* VOICE – FINAL FIX */
-let recognition=null;
-let listening=false;
+/* ORIGINAL VOICE LOGIC RESTORED */
+const vBtn = document.getElementById("voiceBtn");
+vBtn.onclick=()=>{
+  if(!window.masterEnabled) {
+      alert("⚠️ Voice Command Disabled. Please turn on Master Control first.");
+      document.getElementById("voiceNote").innerText = "Access Denied: Master Control is OFF";
+      return;
+  }
 
-voiceBtn.onclick=()=>{
-  if(listening) return;
-
-  recognition=new webkitSpeechRecognition();
-  recognition.lang="en-IN";
-  recognition.continuous=false;
-  recognition.interimResults=false;
-
-  listening=true;
-  voiceBtn.classList.add("listening");
-  voiceBtn.innerText="🎤 Listening...";
-  voiceNote.innerText="";
-
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRec) return alert("Speech recognition not supported");
+  
+  const recognition=new SpeechRec(); recognition.lang="en-IN";
+  vBtn.classList.add("listening-anim"); vBtn.innerText="Listening...";
   recognition.start();
-  const timeout=setTimeout(()=>recognition.stop(),2500);
-
+  
   recognition.onresult=e=>{
-    clearTimeout(timeout);
     let raw=e.results[0][0].transcript.toLowerCase();
-    voiceNote.innerText="You said: "+raw;
-
-    let t=raw
-      .replace(/\bof\b/g,"off")
-      .replace(/\bo f\b/g,"off")
-      .replace(/\bwon\b/g,"one")
-      .replace(/\bto\b/g,"two")
-      .replace(/\btoo\b/g,"two")
-      .replace(/\btu\b/g,"two")
-      .replace(/\btree\b/g,"three")
-      .replace(/\bfor\b/g,"four");
-
-    let led=
-      t.includes("light one")||t.includes("light 1")?1:
-      t.includes("light two")||t.includes("light 2")?2:
-      t.includes("light three")||t.includes("light 3")?3:
-      t.includes("light four")||t.includes("light 4")?4:null;
-
-    if(led!==null){
-      if(/\boff\b/.test(t)) set(ref(db,"leds/led"+led),false);
-      else if(/\bon\b/.test(t)) set(ref(db,"leds/led"+led),true);
-    }
+    document.getElementById("voiceNote").innerText=`"${raw}"`;
+    let t=raw.replace(/\bof\b/g,"off").replace(/\bo f\b/g,"off").replace(/\bwon\b/g,"one").replace(/\bto\b/g,"two").replace(/\btoo\b/g,"two");
+    let led=t.includes("light one")||t.includes("light 1")?1:t.includes("light two")||t.includes("light 2")?2:t.includes("light three")||t.includes("light 3")?3:t.includes("light four")||t.includes("light 4")?4:null;
+    if(led!==null) set(ref(db,"leds/led"+led), !t.includes("off"));
   };
-
-  recognition.onerror=()=>recognition.stop();
-
-  recognition.onend=()=>{
-    listening=false;
-    voiceBtn.classList.remove("listening");
-    voiceBtn.innerText="🎤 Voice OFF";
-  };
+  recognition.onend=()=>{ vBtn.classList.remove("listening-anim"); vBtn.innerText="Start Listening"; };
 };
 
-/* DARK MODE */
-if(localStorage.theme==="dark"){
-  document.body.classList.add("dark");
-  darkToggle.checked=true;
-}
-darkToggle.onchange=()=>{
+if(localStorage.theme==="dark") document.body.classList.add("dark");
+document.getElementById("darkToggle").checked = localStorage.theme==="dark";
+document.getElementById("darkToggle").onchange=()=>{
   document.body.classList.toggle("dark");
   localStorage.theme=document.body.classList.contains("dark")?"dark":"light";
 };
 </script>
-
 </body>
 </html>
