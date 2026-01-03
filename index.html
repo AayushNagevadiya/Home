@@ -214,6 +214,9 @@ const darkToggle=document.getElementById("darkToggle");
 
 let masterEnabled=true;
 
+/* PAGE HISTORY STACK */
+let pageStack=["home"];
+
 /* LOGIN */
 loginBtn.onclick=()=>{
   const name=nameI.value.trim();
@@ -236,7 +239,7 @@ loginBtn.onclick=()=>{
     login.style.display="none";
     app.classList.remove("hidden");
     hello.innerText="Hello, "+name+" 👋";
-    navigate("home");
+    navigate("home",true);
   });
 };
 
@@ -246,14 +249,48 @@ window.toggleSidebar=()=>{
   overlay.classList.toggle("show");
 };
 overlay.onclick=()=>{sidebar.classList.remove("show");overlay.classList.remove("show");};
-window.navigate=p=>{
+
+/* NAVIGATION WITH HISTORY */
+window.navigate=(p,reset=false)=>{
   document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
   document.getElementById(p).classList.add("active");
   pageTitle.innerText=p==="home"?"Home":"Room 1";
+
+  if(reset){
+    pageStack=["home"];
+  }else if(pageStack[pageStack.length-1]!==p){
+    pageStack.push(p);
+  }
+
   sidebar.classList.remove("show");
   overlay.classList.remove("show");
 };
+
 window.logout=()=>location.reload();
+
+/* SWIPE BACK + EXIT CONFIRM */
+let sx=0,sy=0;
+document.addEventListener("touchstart",e=>{
+  sx=e.touches[0].clientX;
+  sy=e.touches[0].clientY;
+},{passive:true});
+
+document.addEventListener("touchend",e=>{
+  let ex=e.changedTouches[0].clientX;
+  let ey=e.changedTouches[0].clientY;
+  let dx=ex-sx, dy=Math.abs(ey-sy);
+
+  if(dy>60 || dx<80) return;
+
+  if(pageStack.length>1){
+    pageStack.pop();
+    navigate(pageStack[pageStack.length-1],true);
+  }else{
+    if(confirm("Do you want to exit?")){
+      window.close();
+    }
+  }
+});
 
 /* ESP STATUS */
 setInterval(()=>{
@@ -294,9 +331,6 @@ for(let i=1;i<=4;i++){
 /* VOICE */
 let recognition;
 voiceBtn.onclick=()=>{
-  if(!("webkitSpeechRecognition"in window)){
-    alert("Voice not supported");return;
-  }
   recognition=new webkitSpeechRecognition();
   recognition.lang="en-IN";
   recognition.start();
