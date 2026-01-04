@@ -38,7 +38,6 @@ body {
 
 .hidden { display: none !important; }
 
-/* NOTIFICATION TOAST */
 #toast {
   position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
   background: #f43f5e; color: white; padding: 12px 24px; border-radius: 50px;
@@ -47,7 +46,6 @@ body {
 }
 #toast.show { bottom: 30px; }
 
-/* LOGIN */
 .login {
   position: fixed; inset: 0; z-index: 1000; background: var(--accent-gradient);
   display: flex; align-items: center; justify-content: center;
@@ -65,7 +63,6 @@ body {
   background: var(--accent-gradient); color: white; font-size: 18px; font-weight: 600; cursor: pointer;
 }
 
-/* TOPBAR */
 .topbar { height: 70px; display: flex; align-items: center; padding: 0 25px; z-index: 10; position: relative; }
 .menu-icon {
   font-size: 24px; cursor: pointer; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
@@ -73,7 +70,6 @@ body {
 }
 .topbar h3 { flex: 1; text-align: center; font-weight: 700; color: var(--text-main); }
 
-/* SIDEBAR */
 .sidebar {
   position: fixed; top: 0; left: 0; height: 100%; width: 280px; background: var(--card-bg); backdrop-filter: blur(20px);
   padding: 30px 20px; transform: translateX(-100%); transition: 0.4s ease; z-index: 100; border-right: 1px solid var(--glass-border);
@@ -88,10 +84,8 @@ body {
 #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); opacity: 0; pointer-events: none; transition: 0.3s; z-index: 90; }
 #overlay.show { opacity: 1; pointer-events: auto; }
 
-/* PAGES */
 .page { position: absolute; inset: 70px 0 0 0; padding: 20px; display: none; overflow-y: auto; }
 .page.active { display: block; animation: fadeIn 0.3s ease; }
-#room1 { touch-action: pan-y; }
 @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
 .bento-grid { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
@@ -99,7 +93,6 @@ body {
   background: var(--card-bg); backdrop-filter: blur(15px); padding: 25px; border-radius: 24px; border: 1px solid var(--glass-border); box-shadow: var(--shadow);
 }
 
-/* STATUS */
 .status-label { font-size: 18px; font-weight: 800; display: block; margin-bottom: 2px; text-align: left; }
 .status-container { display: flex; align-items: center; gap: 6px; }
 .status-text { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -107,7 +100,6 @@ body {
 .online { color: #10b981; } .offline { color: #f43f5e; }
 .dot-online { background: #10b981; box-shadow: 0 0 8px #10b981; } .dot-offline { background: #f43f5e; }
 
-/* MASTER CARD */
 .master-card { 
   display: flex; align-items: center; justify-content: center; gap: 12px; height: 80px; font-size: 18px; font-weight: 800; 
   cursor: pointer; transition: 0.3s; border-radius: 24px;
@@ -163,7 +155,7 @@ body {
   <div class="page active" id="home">
     <div style="text-align: center; margin-bottom: 25px;">
       <h1 id="time-now" style="font-size: 46px; font-weight: 800; color: var(--accent); margin: 0;">00:00:00</h1>
-      <div id="date-now" style="font-size: 14px; color: var(--text-sub); font-weight: 600;">Monday, 01 Jan 2024</div>
+      <div id="date-now" style="font-size: 14px; color: var(--text-sub); font-weight: 600;">Date...</div>
     </div>
 
     <div class="bento-grid">
@@ -210,9 +202,7 @@ const fb=initializeApp({
 const db=getDatabase(fb);
 
 const login=document.getElementById("login"), app=document.getElementById("app"), toast=document.getElementById("toast");
-let currentActivePage = "home";
 
-// ENHANCED NOTIFICATION LOGIC
 function showNotification(msg, isError = true) {
   toast.innerHTML = `<i class="fa ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
   toast.style.background = isError ? "#f43f5e" : "#10b981";
@@ -220,150 +210,98 @@ function showNotification(msg, isError = true) {
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// TIME UPDATE
-setInterval(() => {
-  const now = new Date();
-  document.getElementById("time-now").innerText = now.toLocaleTimeString([], { hour12: true });
-  document.getElementById("date-now").innerText = now.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-}, 1000);
-
-// LOGIN LOGIC WITH SECURITY
+// LOGIN LOGIC
 document.getElementById("loginBtn").onclick=()=> { 
-  const enteredName = document.getElementById("name").value.trim();
-  const enteredPhone = document.getElementById("phone").value.trim();
-
-  if (!enteredName || !enteredPhone) {
-    showNotification("Enter Name and Phone Number");
-    return;
-  }
-
-  const visitorRef = ref(db, "visitors/" + enteredPhone);
-
-  get(visitorRef).then((snapshot) => {
-    // 1. BLOCK CHECK
-    if (snapshot.exists() && snapshot.val().blocked === true) {
-      alert("🚫 ACCESS DENIED: Your account is blocked.");
-      return; 
-    }
-
-    // 2. NAME MATCH CHECK
-    if (snapshot.exists()) {
-      const storedName = snapshot.val().name;
-      if (enteredName.toLowerCase() !== storedName.toLowerCase()) {
-        showNotification("Name mismatch for this number!");
-        return; 
-      }
-    }
-
-    // 3. VISIT UPDATE
-    let visitCount = (snapshot.exists() ? (snapshot.val().visits || 0) : 0) + 1;
-    const userData = { name: enteredName, phone: enteredPhone, lastVisit: Date.now(), visits: visitCount };
-    if (!snapshot.exists()) userData.blocked = false;
-
-    update(visitorRef, userData);
-
-    // 4. ACTIVE USER TRACKING
-    const activeRef = ref(db, "activeUsers/" + enteredPhone);
-    set(activeRef, { name: enteredName });
-    onDisconnect(activeRef).remove(); 
-
-    // 5. UI SWITCH
-    document.getElementById("userDisplayName").innerText = enteredName;
-    login.style.display="none"; 
-    app.classList.remove("hidden"); 
+  const n = document.getElementById("name").value.trim();
+  const p = document.getElementById("phone").value.trim();
+  if (!n || !p) { showNotification("Enter Credentials"); return; }
+  const vRef = ref(db, "visitors/" + p);
+  get(vRef).then((s) => {
+    if (s.exists() && s.val().blocked) { alert("ACCOUNT BLOCKED"); return; }
+    update(vRef, { name: n, phone: p, lastVisit: Date.now(), visits: (s.exists() ? s.val().visits : 0) + 1 });
+    document.getElementById("userDisplayName").innerText = n;
+    login.style.display="none"; app.classList.remove("hidden");
   });
 };
 
-// NAVIGATION
+// NAVIGATION & UI
 window.navigate=(p)=>{
   document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active"));
   document.getElementById(p).classList.add("active");
-  document.getElementById("pageTitle").innerText=p==="home"?"Dashboard":"Living Room";
   document.getElementById("sidebar").classList.remove("show"); document.getElementById("overlay").classList.remove("show");
-  currentActivePage = p;
 };
-
 window.toggleSidebar=()=> { document.getElementById("sidebar").classList.toggle("show"); document.getElementById("overlay").classList.toggle("show"); };
-document.getElementById("overlay").onclick=window.toggleSidebar;
-
-// ESP32 STATUS
+document.getElementById("overlay").onclick=toggleSidebar;
 setInterval(() => {
-  get(ref(db, "status/lastSeen")).then(s => {
-    const isOnline = s.exists() && (Date.now() - s.val() < 10000);
-    document.getElementById("espStatus").innerHTML = isOnline 
-      ? `<span class="status-dot dot-online"></span><span class="status-text online">Online</span>`
-      : `<span class="status-dot dot-offline"></span><span class="status-text offline">Offline</span>`;
-  });
-}, 2000);
+  const now = new Date();
+  document.getElementById("time-now").innerText = now.toLocaleTimeString();
+  document.getElementById("date-now").innerText = now.toDateString();
+}, 1000);
 
-// MASTER CONTROL & LEDS
-const mc = document.getElementById("masterCard");
+// STATUS & MASTER
 onValue(ref(db,"status/masterControl"),s=>{
   window.masterEnabled=!!s.val();
+  const mc = document.getElementById("masterCard");
   mc.className = "master-card " + (window.masterEnabled ? "master-on" : "master-off");
-  mc.innerHTML = window.masterEnabled ? `<i class="fa fa-unlock"></i> <span>MASTER CONTROL ON</span>` : `<i class="fa fa-lock"></i> <span>MASTER CONTROL OFF</span>`;
+  mc.innerHTML = window.masterEnabled ? `<i class="fa fa-unlock"></i> MASTER ON` : `<i class="fa fa-lock"></i> MASTER OFF`;
 });
-mc.onclick=()=>set(ref(db,"status/masterControl"),!window.masterEnabled);
+document.getElementById("masterCard").onclick=()=>set(ref(db,"status/masterControl"),!window.masterEnabled);
 
+// LEDS
 for(let i=1;i<=4;i++){
   const b=document.createElement("button"); b.className="led-btn";
   document.getElementById("ledGrid").appendChild(b);
   onValue(ref(db,"leds/led"+i),s=>{
-    let active = !!s.val();
-    b.innerText=active?"LED "+i+" - Active":"LED "+i+" - Inactive";
-    b.className=active?"led-btn led-active":"led-btn";
-    b.onclick=()=>{ 
-      if(window.masterEnabled) {
-        set(ref(db,"leds/led"+i),!active); 
-      } else {
-        showNotification("Master Control is OFF"); 
-      }
-    };
+    let act = !!s.val();
+    b.innerText=`LED ${i} - ${act ? 'ON' : 'OFF'}`;
+    b.className=act?"led-btn led-active":"led-btn";
+    b.onclick=()=>{ if(window.masterEnabled) set(ref(db,"leds/led"+i),!act); else showNotification("Master Locked"); };
   });
 }
 
-// --- UPDATED VOICE COMMAND LOGIC ---
+// --- VOICE COMMAND LOGIC: PERFECTED ---
 window.startVoice = () => {
-    // 1. Check if Master Control is OFF before starting
-    if (!window.masterEnabled) {
-        showNotification("Voice Command disabled: Master is OFF");
-        return; // EXIT - Recognition will not start
-    }
-
+    if (!window.masterEnabled) { showNotification("Master Control is OFF"); return; }
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    const voiceNote = document.getElementById("voiceNote");
     recognition.lang = 'en-US';
     
-    recognition.onstart = () => { voiceNote.innerText = "Listening..."; };
+    recognition.onstart = () => { document.getElementById("voiceNote").innerText = "Listening..."; };
     
     recognition.onresult = (event) => {
         const speech = event.results[0][0].transcript.toLowerCase();
-        voiceNote.innerText = `Heard: "${speech}"`;
+        document.getElementById("voiceNote").innerText = `Heard: "${speech}"`;
         
-        // Double check in case it was turned off while listening
-        if (!window.masterEnabled) { 
-            showNotification("Master Control was turned OFF"); 
-            return; 
-        }
+        // Dictionary for fuzzy matching
+        const numDict = { "one": 1, "1": 1, "two": 2, "tu": 2, "to": 2, "2": 2, "three": 3, "tree": 3, "3": 3, "four": 4, "for": 4, "4": 4 };
+        const actionOn = speech.includes("on") || speech.includes("active") || speech.includes("one"); // common error
+        const actionOff = speech.includes("off") || speech.includes("of") || speech.includes("stop");
 
-        for (let i = 1; i <= 4; i++) {
-            if (speech.includes(`led ${i}`) || speech.includes(`light ${i}`)) {
-                set(ref(db, `leds/led${i}`), speech.includes("on") || speech.includes("active"));
+        let found = false;
+        Object.keys(numDict).forEach(word => {
+            if (speech.includes(word)) {
+                const ledId = numDict[word];
+                if (actionOn && !actionOff) {
+                    set(ref(db, `leds/led${ledId}`), true);
+                    found = true;
+                } else if (actionOff) {
+                    set(ref(db, `leds/led${ledId}`), false);
+                    found = true;
+                }
             }
-        }
+        });
+        if(found) showNotification("Voice Command Executed", false);
     };
     
-    recognition.onerror = () => { voiceNote.innerText = "Error! Try again."; };
+    recognition.onerror = () => { document.getElementById("voiceNote").innerText = "Error! Please try again."; };
     recognition.start();
 };
 
-// DARK MODE
+// THEME & LOGOUT
 if(localStorage.theme==="dark") document.body.classList.add("dark");
 document.getElementById("darkToggle").onchange=()=>{
   document.body.classList.toggle("dark");
   localStorage.theme=document.body.classList.contains("dark")?"dark":"light";
 };
-
 window.logout = () => { location.reload(); };
 </script>
 </body>
