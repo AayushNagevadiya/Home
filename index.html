@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-<title>Smart Home Pro | Perfected</title>
-
+<title>Smart Home Pro | Modern AI UI</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 :root {
   --bg: #f0f7ff;
   --card-bg: rgba(255, 255, 255, 0.9);
   --accent: #0ea5e9;
   --accent-gradient: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  --voice-active: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   --text-main: #0f172a;
   --text-sub: #64748b;
   --glass-border: rgba(14, 165, 233, 0.2);
@@ -109,12 +108,48 @@ body {
   border: 1px solid var(--glass-border); box-shadow: var(--shadow);
 }
 
-.led-grid { display: grid; gap: 15px; }
-.led-btn {
-  padding: 20px; border: 1px solid var(--glass-border); border-radius: 20px;
-  font-size: 16px; font-weight: 700; cursor: pointer; background: var(--card-bg); color: var(--text-main); transition: 0.2s;
+/* MODERN AI BASED BUTTON DESIGN */
+.led-row {
+  display: flex; align-items: center; justify-content: space-between; background: var(--card-bg);
+  padding: 15px 20px; border-radius: 28px; margin-bottom: 15px; border: 1px solid var(--glass-border); box-shadow: var(--shadow);
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.led-active { background: var(--accent-gradient); color: white; border: none; }
+
+.led-label { font-weight: 800; font-size: 14px; color: var(--text-main); opacity: 0.8; }
+
+.btn-toggle { 
+  border: none; border-radius: 20px; font-weight: 800; cursor: pointer; 
+  min-width: 80px; padding: 12px; background: #94a3b833; color: var(--text-sub); 
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255,255,255,0.1); font-size: 14px;
+}
+
+.btn-on { 
+  background: var(--accent-gradient) !important; 
+  color: white !important;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.4), inset 0 0 10px rgba(255,255,255,0.3);
+  transform: scale(1.05);
+}
+
+/* TIMER DESIGN */
+.timer-ui { display: flex; align-items: center; gap: 8px; }
+.timer-box { display: flex; flex-direction: column; align-items: center; }
+.timer-box input { 
+  width: 44px; height: 40px; border: 1px solid var(--glass-border); border-radius: 12px; 
+  text-align: center; font-weight: 800; background: rgba(255,255,255,0.5); color: var(--text-main); 
+  font-size: 14px; outline: none; transition: 0.2s;
+}
+.timer-box input:focus { border-color: var(--accent); background: white; }
+.timer-box span { font-size: 9px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-top: 4px; }
+
+/* Voice Pulse Animation */
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+.v-active { background: var(--voice-active) !important; animation: pulse 1.5s infinite; }
+
 </style>
 </head>
 <body>
@@ -153,19 +188,16 @@ body {
     <div style="text-align: center; margin-bottom: 25px;">
       <h1 id="time-now" style="font-size: 46px; font-weight: 800; color: var(--accent); margin: 0;">00:00:00</h1>
     </div>
-
     <div class="bento-grid">
       <div class="bento-item">
         <h2 style="margin: 0; font-size: 30px;">Hello <span id="userDisplayName">User</span> 👋</h2>
       </div>
-
       <div class="bento-item">
         <span class="status-label">ESP32 Status</span>
         <div id="espStatus" class="status-container">
           <span class="status-dot dot-offline"></span> <span id="espText" style="color:#f43f5e; font-weight: 700;">OFFLINE</span>
         </div>
       </div>
-
       <div class="master-card master-off" id="masterCard">
         <i class="fa fa-lock"></i> <span>MASTER CONTROL OFF</span>
       </div>
@@ -174,11 +206,11 @@ body {
 
   <div class="page" id="room1">
     <div class="card">
-      <h3 style="margin-top:0"><i class="fa fa-microphone"></i> Perfect Voice</h3>
-      <button id="vBtn" onclick="startVoice()" style="width: 100%; padding: 20px; border: none; border-radius: 20px; background: var(--accent-gradient); color: white; font-weight: 700; font-size: 18px;">Start Listening</button>
-      <div id="voiceNote" style="font-style:italic; color:var(--text-sub); text-align:center; margin-top:10px">Speak "Light one off"</div>
+      <h3 style="margin-top:0"><i class="fa fa-microphone"></i> Smart Voice</h3>
+      <button id="vBtn" onclick="startVoice()" style="width: 100%; padding: 20px; border: none; border-radius: 20px; background: var(--accent-gradient); color: white; font-weight: 700; font-size: 18px; transition: 0.3s;">Start Listening</button>
+      <div id="voiceNote" style="font-style:italic; color:var(--text-sub); text-align:center; margin-top:10px">Ready for command...</div>
     </div>
-    <div class="led-grid" id="ledGrid"></div>
+    <div id="ledGrid"></div>
   </div>
 </div>
 
@@ -193,6 +225,9 @@ const fb=initializeApp({
 const db=getDatabase(fb);
 
 const login=document.getElementById("login"), app=document.getElementById("app"), toast=document.getElementById("toast");
+const timers = {};
+let recognitionActive = false;
+let userPhone = "";
 
 function showNotification(msg, isError = true) {
   toast.innerHTML = `<i class="fa ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
@@ -201,28 +236,38 @@ function showNotification(msg, isError = true) {
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// 1. LOGIN & LIVE DATA
+function checkBlockStatus(phone) {
+  onValue(ref(db, "blockedUsers/" + phone), (s) => {
+    if(s.exists() && s.val() === true) {
+      alert("Security Alert: Your access has been revoked by admin.");
+      location.reload();
+    }
+  });
+}
+
 document.getElementById("loginBtn").onclick=()=> { 
   const n = document.getElementById("name").value.trim();
   const p = document.getElementById("phone").value.trim();
   if (!n || !p) return showNotification("Enter Credentials");
-
-  const vRef = ref(db, "visitors/" + p);
-  get(vRef).then((s) => {
-    if (s.exists() && s.val().blocked) { alert("BLOCKED"); return; }
-    update(vRef, { name: n, phone: p, lastVisit: Date.now(), visits: (s.exists() ? s.val().visits : 0) + 1 });
+  
+  get(ref(db, "blockedUsers/" + p)).then((s) => {
+    if(s.exists() && s.val() === true) return showNotification("Phone Number Blocked");
     
-    // Admin Panel Live Monitoring
-    const activeRef = ref(db, "activeUsers/" + p);
-    set(activeRef, { name: n, lastSeen: Date.now() });
-    onDisconnect(activeRef).remove(); 
-
-    document.getElementById("userDisplayName").innerText = n;
-    login.style.display="none"; app.classList.remove("hidden");
+    userPhone = p;
+    checkBlockStatus(p);
+    
+    const vRef = ref(db, "visitors/" + p);
+    get(vRef).then((sv) => {
+      update(vRef, { name: n, phone: p, lastVisit: Date.now(), visits: (sv.exists() ? sv.val().visits : 0) + 1 });
+      const activeRef = ref(db, "activeUsers/" + p);
+      set(activeRef, { name: n, lastSeen: Date.now() });
+      onDisconnect(activeRef).remove(); 
+      document.getElementById("userDisplayName").innerText = n;
+      login.style.display="none"; app.classList.remove("hidden");
+    });
   });
 };
 
-// 2. ESP32 LIVE STATUS
 setInterval(() => {
   get(ref(db, "status/lastSeen")).then(s => {
     const isOnline = s.exists() && (Date.now() - s.val() < 12000);
@@ -232,9 +277,9 @@ setInterval(() => {
     text.innerText = isOnline ? "ONLINE" : "OFFLINE";
     text.style.color = isOnline ? "#10b981" : "#f43f5e";
   });
-}, 5000);
+  document.getElementById("time-now").innerText = new Date().toLocaleTimeString();
+}, 1000);
 
-// 3. MASTER & LEDS
 onValue(ref(db,"status/masterControl"),s=>{
   window.masterEnabled=!!s.val();
   const mc = document.getElementById("masterCard");
@@ -243,70 +288,117 @@ onValue(ref(db,"status/masterControl"),s=>{
 });
 document.getElementById("masterCard").onclick=()=>set(ref(db,"status/masterControl"),!window.masterEnabled);
 
+const runLED = (i, forceState = null) => {
+    if(!window.masterEnabled) return showNotification("Master Locked");
+    
+    let hrs = parseInt(document.getElementById(`h-${i}`).value) || 0;
+    let mins = parseInt(document.getElementById(`m-${i}`).value) || 0;
+    let secs = parseInt(document.getElementById(`s-${i}`).value) || 0;
+
+    const totalMs = (hrs * 3600 + mins * 60 + secs) * 1000;
+    const currentState = document.getElementById(`btn-${i}`).innerText === "ON";
+    const nextState = (forceState !== null) ? forceState : !currentState;
+
+    if (!nextState) {
+        set(ref(db, `leds/led${i}`), false);
+    } else {
+        set(ref(db, `leds/led${i}`), true);
+        if (totalMs > 0) {
+            showNotification(`L${i} Auto-Off Set`, false);
+            if(timers[i]) clearTimeout(timers[i]);
+            timers[i] = setTimeout(() => set(ref(db, `leds/led${i}`), false), totalMs);
+        }
+    }
+};
+
 for(let i=1;i<=4;i++){
-  const b=document.createElement("button"); b.className="led-btn";
-  document.getElementById("ledGrid").appendChild(b);
-  onValue(ref(db,"leds/led"+i),s=>{
-    let act = !!s.val();
-    b.innerText=`LED ${i} - ${act ? 'ON' : 'OFF'}`;
-    b.className=act?"led-btn led-active":"led-btn";
-    b.onclick=()=>{ if(window.masterEnabled) set(ref(db,"leds/led"+i),!act); else showNotification("Master Locked"); };
+  const row = document.createElement("div");
+  row.className = "led-row";
+  row.innerHTML = `
+    <div class="led-label">L${i} LIGHT</div>
+    <div class="timer-ui">
+      <div class="timer-box"><input type="number" id="h-${i}" min="0" max="24" placeholder="0"><span>h</span></div>
+      <div class="timer-box"><input type="number" id="m-${i}" min="0" max="59" placeholder="0"><span>m</span></div>
+      <div class="timer-box"><input type="number" id="s-${i}" min="0" max="59" placeholder="0"><span>s</span></div>
+    </div>
+    <button class="btn-toggle" id="btn-${i}">OFF</button>
+  `;
+  document.getElementById("ledGrid").appendChild(row);
+  onValue(ref(db, `leds/led${i}`), (s) => {
+    const isON = !!s.val();
+    const btn = document.getElementById(`btn-${i}`);
+    btn.innerText = isON ? "ON" : "OFF";
+    btn.className = isON ? "btn-toggle btn-on" : "btn-toggle";
+    if(!isON && timers[i]) { clearTimeout(timers[i]); timers[i] = null; }
   });
+  document.getElementById(`btn-${i}`).onclick = () => runLED(i);
 }
 
-// 4. PERFECTED VOICE COMMAND ENGINE
+// ULTRA-STABLE VOICE COMMANDS WITH BULK CONTROL
 window.startVoice = () => {
+    if (recognitionActive) return;
     if (!window.masterEnabled) return showNotification("Master Control is OFF");
-    
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return showNotification("Voice not supported");
+
+    const recognition = new SpeechRecognition();
     recognition.lang = 'en-US';
-    recognition.interimResults = false;
+    const vBtn = document.getElementById("vBtn");
+    const vNote = document.getElementById("voiceNote");
 
     recognition.onstart = () => { 
-        document.getElementById("voiceNote").innerText = "Listening for command...";
-        document.getElementById("vBtn").style.opacity = "0.5";
+        recognitionActive = true; 
+        vBtn.classList.add("v-active");
+        vBtn.innerText = "Listening...";
     };
 
     recognition.onresult = (event) => {
         const speech = event.results[0][0].transcript.toLowerCase();
-        document.getElementById("voiceNote").innerText = `Heard: "${speech}"`;
+        vNote.innerText = `AI Heard: "${speech}"`;
         
-        // PHONETIC MAPPING DICTIONARY
-        const nums = { 
-            "1": 1, "one": 1, "on": 1, 
-            "2": 2, "two": 2, "tu": 2, "to": 2, 
-            "3": 3, "three": 3, "tree": 3, 
-            "4": 4, "four": 4, "for": 4 
-        };
-
-        const turnOn = speech.includes("on") || speech.includes("active") || speech.includes("start") || speech.includes("open");
+        const turnOn = speech.includes("on") || speech.includes("open") || speech.includes("start");
         const turnOff = speech.includes("off") || speech.includes("of") || speech.includes("stop") || speech.includes("close");
 
-        let found = false;
-        Object.keys(nums).forEach(key => {
-            if (speech.split(" ").includes(key) || speech.includes("light " + key)) {
-                const id = nums[key];
-                if (turnOff) {
-                    set(ref(db, `leds/led${id}`), false);
-                    found = true;
-                } else if (turnOn) {
-                    set(ref(db, `leds/led${id}`), true);
-                    found = true;
-                }
+        // GLOBAL COMMAND CHECK (ALL / EVERYTHING)
+        if (speech.includes("all") || speech.includes("everything") || speech.includes("every")) {
+            for (let i = 1; i <= 4; i++) {
+                runLED(i, turnOn ? true : false);
+            }
+            showNotification(turnOn ? "Turning All ON" : "Turning All OFF", false);
+            return;
+        }
+
+        const commands = [
+            { id: 1, aliases: ["1", "one", "won"] },
+            { id: 2, aliases: ["2", "two", "to", "too", "do"] }, 
+            { id: 3, aliases: ["3", "three", "tree"] },
+            { id: 4, aliases: ["4", "four", "for", "fore"] }   
+        ];
+
+        commands.forEach(cmd => {
+            const mentioned = cmd.aliases.some(alias => {
+                const regex = new RegExp(`\\b${alias}\\b`, 'g');
+                return regex.test(speech);
+            });
+            if (mentioned) {
+                if (turnOff) runLED(cmd.id, false);
+                else if (turnOn) runLED(cmd.id, true);
             }
         });
-
-        if(found) showNotification("Command Processed", false);
-        else showNotification("Command Not Recognized");
     };
 
-    recognition.onend = () => { document.getElementById("vBtn").style.opacity = "1"; };
+    recognition.onend = () => { 
+        recognitionActive = false; 
+        vBtn.classList.remove("v-active");
+        vBtn.innerText = "Start Listening";
+        setTimeout(() => { vNote.innerText = "Ready for command..."; }, 2500); 
+    };
+
     recognition.start();
 };
 
 window.navigate=(p)=>{ document.querySelectorAll(".page").forEach(pg=>pg.classList.remove("active")); document.getElementById(p).classList.add("active"); toggleSidebar(); };
 window.toggleSidebar=()=> { document.getElementById("sidebar").classList.toggle("show"); document.getElementById("overlay").classList.toggle("show"); };
-setInterval(() => { document.getElementById("time-now").innerText = new Date().toLocaleTimeString(); }, 1000);
 if(localStorage.theme==="dark") document.body.classList.add("dark");
 document.getElementById("darkToggle").onchange=()=>{ document.body.classList.toggle("dark"); localStorage.theme=document.body.classList.contains("dark")?"dark":"light"; };
 window.logout = () => { location.reload(); };
